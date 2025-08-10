@@ -1,0 +1,262 @@
+pairs:
+- template_col: University
+  raw_col: University
+  count: 51
+- template_col: 'Course Name '
+  raw_col: Program Name
+  count: 35
+- template_col: Course Concentration
+  raw_col: Concentration
+  count: 20
+- template_col: Course Level
+  raw_col: Study Level
+  count: 35
+- template_col: Course Link
+  raw_col: Website URL
+  count: 34
+- template_col: Course Duration
+  raw_col: Duration
+  count: 35
+- template_col: Entry Requirements
+  raw_col: Entry Requirements
+  count: 50
+- template_col: TOEFL
+  raw_col: TOEFL Score
+  count: 14
+- template_col: TOEFL No Less then
+  raw_col: TOEFL No Band Less Than
+  count: 30
+- template_col: IELTS
+  raw_col: IELTS Score
+  count: 33
+- template_col: IELTS No Less then
+  raw_col: IELTS No Band Less Than
+  count: 49
+- template_col: 'PET '
+  raw_col: PTE Score
+  count: 50
+- template_col: PET No Less then
+  raw_col: PTE No Band Less Than
+  count: 50
+- template_col: Backlogs
+  raw_col: Backlog Range
+  count: 34
+- template_col: Application Link
+  raw_col: Application Fee
+  count: 27
+- template_col: Tution Fee
+  raw_col: Yearly Tuition Fees
+  count: 35
+- template_col: GRE
+  raw_col: GRE Score
+  count: 27
+- template_col: 15 Year Education Remarks
+  raw_col: Remarks
+  count: 26
+- template_col: Application Fee
+  raw_col: Application Fee
+  count: 50
+- template_col: Country
+  raw_col: Country
+  count: 49
+- template_col: Campus
+  raw_col: Campus
+  count: 49
+- template_col: Intake Fall
+  raw_col: Intake Year
+  count: 29
+- template_col: Deadline Fall
+  raw_col: Application Deadline
+  count: 13
+- template_col: Intake Spring
+  raw_col: Open Intakes
+  count: 31
+- template_col: Scholarship Details
+  raw_col: Scholarship Detail
+  count: 8
+- template_col: Remark
+  raw_col: Remarks
+  count: 49
+- template_col: GRE
+  raw_col: GMAT Score
+  count: 2
+- template_col: GMAT
+  raw_col: GMAT Score
+  count: 17
+- template_col: SAT Score
+  raw_col: GMAT Score
+  count: 1
+- template_col: Deadline Spring
+  raw_col: Application Deadline
+  count: 8
+- template_col: Intake Summer
+  raw_col: Intake Year
+  count: 9
+- template_col: Scholarship Details
+  raw_col: Scholarship Available
+  count: 11
+- template_col: SAT Score
+  raw_col: PTE Score
+  count: 40
+- template_col: Intake Winter
+  raw_col: Intake Year
+  count: 8
+- template_col: University
+  raw_col: Institute Name
+  count: 1
+- template_col: 'Course Name '
+  raw_col: Course Name
+  count: 1
+- template_col: Course Link
+  raw_col: Course Link
+  count: 17
+- template_col: Course Duration
+  raw_col: Duration (in months)
+  count: 1
+- template_col: GPA
+  raw_col: 12th Score
+  count: 1
+- template_col: Entry Requirements
+  raw_col: UG Score
+  count: 1
+- template_col: TOEFL
+  raw_col: TOEFL (Overall)
+  count: 1
+- template_col: TOEFL No Less then
+  raw_col: TOEFL (No less than)
+  count: 1
+- template_col: IELTS
+  raw_col: IELTS (Overall)
+  count: 1
+- template_col: IELTS No Less then
+  raw_col: IELTS (No less than)
+  count: 1
+- template_col: DUOLINGO
+  raw_col: Duolingo (Overall)
+  count: 1
+- template_col: 'PET '
+  raw_col: PTE (Overall)
+  count: 1
+- template_col: PET No Less then
+  raw_col: PTE (No less than)
+  count: 1
+- template_col: GRE
+  raw_col: GRE Required (Yes/No)
+  count: 1
+- template_col: GMAT
+  raw_col: GMAT Required (Yes/No)
+  count: 1
+- template_col: Tution Fee
+  raw_col: Tuition fee Overall
+  count: 1
+- template_col: Country
+  raw_col: Institute Country
+  count: 1
+- template_col: City
+  raw_col: Institute City
+  count: 1
+- template_col: Campus
+  raw_col: Institute Rank
+  count: 1
+- template_col: Intake Fall
+  raw_col: Open Intakes
+  count: 3
+- template_col: Deadline Spring
+  raw_col: Offered Intakes
+  count: 1
+- template_col: Deadline Fall
+  raw_col: Intake Year
+  count: 4
+- template_col: 'GRE/GMAT Waiver '
+  raw_col: English Proficiency Exam Waiver
+  count: 16
+- template_col: Deadline Spring
+  raw_col: Intake Year
+  count: 2
+- template_col: S.no
+  raw_col: Serial No.
+  count: 17
+- template_col: 'Course Name '
+  raw_col: 'Course Name '
+  count: 16
+- template_col: Course Concentration
+  raw_col: Course Concentration
+  count: 16
+- template_col: Course Level
+  raw_col: Course Level
+  count: 16
+- template_col: Degree
+  raw_col: Degree
+  count: 16
+- template_col: Area of Study
+  raw_col: Area of Study
+  count: 3
+- template_col: Course Duration
+  raw_col: Course Duration
+  count: 16
+- template_col: STEM Designated
+  raw_col: STEM Designated
+  count: 16
+- template_col: GPA
+  raw_col: GPA
+  count: 16
+- template_col: TOEFL
+  raw_col: TOEFL
+  count: 16
+- template_col: IELTS
+  raw_col: IELTS
+  count: 16
+- template_col: DUOLINGO
+  raw_col: DUOLINGO
+  count: 16
+- template_col: DUOLINGO No Less then
+  raw_col: DUOLINGO
+  count: 16
+- template_col: 'GRE/GMAT Waiver '
+  raw_col: 'GRE/GMAT Waiver '
+  count: 16
+- template_col: Backlogs
+  raw_col: Backlog
+  count: 16
+- template_col: 15 Year Education With NAAC A
+  raw_col: 15 Year Education With NAAC A
+  count: 16
+- template_col: 15 Year Education With NACES Evaluation
+  raw_col: 15 Year Education With NACES Evaluation
+  count: 16
+- template_col: Tution Fee
+  raw_col: Tuition Fees
+  count: 16
+- template_col: WES/NACES Evaluation Required
+  raw_col: WES/NACES Evaluation Required
+  count: 16
+- template_col: City
+  raw_col: City
+  count: 16
+- template_col: Intake Fall
+  raw_col: Intake Fall
+  count: 16
+- template_col: Deadline Fall
+  raw_col: Deadline Fall
+  count: 16
+- template_col: Intake Spring
+  raw_col: Intake Spring
+  count: 16
+- template_col: Deadline Spring
+  raw_col: Deadline Spring
+  count: 16
+- template_col: Intake Summer
+  raw_col: Intake Summer
+  count: 16
+- template_col: Deadline Summer
+  raw_col: Deadline Summer
+  count: 16
+- template_col: Intake Winter
+  raw_col: Intake Winter
+  count: 16
+- template_col: Deadline Winter
+  raw_col: Deadline Winter
+  count: 16
+- template_col: Scholarship Details
+  raw_col: Scholarship details
+  count: 16

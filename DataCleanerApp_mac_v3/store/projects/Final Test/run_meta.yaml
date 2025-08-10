@@ -1,0 +1,9 @@
+version: 6.19 (AI panel wide layout; export/import bottom row; collapsible sections;
+  headers-only mapping; deterministic enrichment; resets; caching; tokens)
+timestamp_utc: '2025-08-10T10:22:07.463916'
+project: Final Test
+raw_rows: 542
+rows_out: 542
+flagged_rows: 0
+enrichment_targets:
+- Area of Study

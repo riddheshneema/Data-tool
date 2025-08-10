@@ -1,0 +1,10 @@
+{
+  "version": "5.0 Flow Redesign",
+  "timestamp_utc": "2025-08-08T20:22:30.466251",
+  "raw_rows": 24751,
+  "rows_out": 24751,
+  "flagged_rows": 0,
+  "enrichment_targets": [
+    "Area of Study"
+  ]
+}

@@ -1,0 +1,47 @@
+overrides:
+  S.no: ''
+  University: University
+  'Course Name ': Program Name
+  Course Concentration: Concentration
+  Course Level: Study Level
+  Degree: ''
+  Area of Study: ''
+  Course Link: Website URL
+  Course Duration: Duration
+  STEM Designated: ''
+  GPA: ''
+  Entry Requirements: Entry Requirements
+  TOEFL: TOEFL Score
+  TOEFL No Less then: TOEFL No Band Less Than
+  IELTS: IELTS Score
+  IELTS No Less then: IELTS No Band Less Than
+  DUOLINGO: ''
+  DUOLINGO No Less then: ''
+  'PET ': PTE Score
+  PET No Less then: PTE No Band Less Than
+  GRE: GRE Score
+  GMAT: ''
+  'GRE/GMAT Waiver ': ''
+  SAT Score: ''
+  Backlogs: Backlog Range
+  15 Year Education With NAAC A: ''
+  15 Year Education With NACES Evaluation: ''
+  15 Year Education Remarks: Remarks
+  Application Fee: Application Fee
+  Tution Fee: Yearly Tuition Fees
+  WES/NACES Evaluation Required: ''
+  Application Link: Application Fee
+  Country: Country
+  City: Country
+  Campus: Campus
+  Intake Fall: Intake Year
+  Deadline Fall: Open Intakes
+  Intake Spring: Application Deadline
+  Deadline Spring: ''
+  Intake Summer: ''
+  Deadline Summer: ''
+  Intake Winter: ''
+  Deadline Winter: ''
+  Scholarship Details: Scholarship Detail
+  Remark: Remarks
+saved_at: '2025-08-08T20:22:08.992654'

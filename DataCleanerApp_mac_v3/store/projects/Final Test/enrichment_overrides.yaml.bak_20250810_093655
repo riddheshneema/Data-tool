@@ -1,0 +1,17 @@
+overrides:
+  Area of Study:
+    '50':
+      new_value: Applied Studies
+      timestamp: '2025-08-10T09:36:16.110445'
+    '2':
+      new_value: Fine Arts and Design
+      timestamp: '2025-08-10T09:36:16.110464'
+    '6':
+      new_value: Fine Arts and Design
+      timestamp: '2025-08-10T09:36:16.110468'
+    '26':
+      new_value: Management
+      timestamp: '2025-08-10T09:36:16.110471'
+    '69':
+      new_value: Computer Science & Information Technology
+      timestamp: '2025-08-10T09:36:16.110475'

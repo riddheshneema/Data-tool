@@ -1,0 +1,1245 @@
+targets:
+  Area of Study:
+    sources:
+    - Program Name
+    rules:
+    - output_value: Applied Studies
+      keyword: Applied
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Applied Studies
+      keyword: Vocational
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Applied Studies
+      keyword: Translational
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Applied Studies
+      keyword: Field Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Applied Studies
+      keyword: Professional Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Applied Studies
+      keyword: Real-world Applications
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Architecture
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Architectural
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Urban
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Landscape
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Interior
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Environmental Design
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Heritage
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Architecture
+      keyword: Building
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Media and Communication
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Communication
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Mass Communication
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Media
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Journalism
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Public Relations
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Advertising
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Digital Media
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Broadcasting
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Film Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Corporate Communication
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Content Creation
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Communication & Media Studies
+      keyword: Television
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Computer Science
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Information Technology
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Information Systems
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Information Security
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Artificial Intelligence
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Machine Learning
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Deep Learning
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Data Science
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Big Data
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Cloud Computing
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Blockchain
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Software Engineering
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Software Development
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Full Stack
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Programming
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Coding
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Cybersecurity
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Network Security
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Penetration Testing
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Web Development
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Mobile App Development
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Database
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: SQL
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Data Analytics
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: HCI
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Human Computer Interaction
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Computer Science & Information Technology
+      keyword: Computing
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Criminal Justice
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Criminology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Forensic
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Legal Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Corrections
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Security
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Homeland Security
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Police
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Public Safety
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Education
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Teaching
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Pedagogy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Curriculum
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Special Education
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Early Childhood
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: Adult Education
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: TESOL
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: ESL
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: B.Ed
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Education
+      keyword: M.Ed
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Engineering
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Civil
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Mechanical
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Electrical
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Electronics
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Aerospace
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Automotive
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Chemical
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Petroleum
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Structural
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Industrial
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Environmental
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Materials
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Biomedical
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Robotics
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Mechatronics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Nanotechnology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Manufacturing
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Energy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Power
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Renewable
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Infrastructure
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Highways
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Bridges
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Aviation
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Fine Arts
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Visual Arts
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Graphic Design
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Fashion Design
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Interior Design
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Industrial Design
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Illustration
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Painting
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Sculpture
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Creative Arts
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Fine Arts and Design
+      keyword: Design Innovation
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Health
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Public Health
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Global Health
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Community Health
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Medicine
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Nursing
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Midwifery
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Pharmacy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Clinical
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Primary Care
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Occupational Therapy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Physiotherapy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Rehabilitation
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Nutrition
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Pharmaceutical
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Health Science
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Law
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Legal
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: LLB
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: LLM
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Constitutional
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: International Law
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Human Rights
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Corporate Law
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Tax Law
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Criminal Law
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Law
+      keyword: Paralegal
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Liberal Arts
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Humanities
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Philosophy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: History
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Cultural Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Sociology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Political Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Anthropology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Religious Studies
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Ethics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Classics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: International Relations
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Languages
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Social Work
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Public Policy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Liberal Arts and Humanities
+      keyword: Language
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Management
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Economics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Business
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Project
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Operations
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Supply Chain
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Hospitality
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Sports
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Retail
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Event
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: MBA
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Leadership
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Strategic
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Organizational
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Entrepreneurship
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Corporate Strategy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Finance
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Accounting
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Commerce
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Marketing
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Financial
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Aviation Management
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Mathematics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Applied Mathematics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Pure Mathematics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Statistics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Probability
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Modelling
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Mathematics
+      keyword: Actuarial
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Biochemistry
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Medical Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Bio
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Biostatistics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Biomedical
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Medical
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Anatomy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Physiology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Pathology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Microbiology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Genetics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Immunology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Pharmacology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Clinical Laboratory
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Diagnostic Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Biotechnology
+      weight: 2.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Medical Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Surgery
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Medical Science
+      keyword: Dental
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Performing Arts
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Theatre
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Drama
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Dance
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Music Performance
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Vocal
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Acting
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Stagecraft
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Musical Theatre
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Opera
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Choreography
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Performing Arts
+      keyword: Music
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Psychology
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Clinical Psychology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Cognitive
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Counselling
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Therapy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Mental Health
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Behavioral Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Psychology & Counselling
+      keyword: Neuropsychology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Science
+      weight: 5.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Physical
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Natural
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Chemistry
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Physics
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Earth Sciences
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Astronomy
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Ecology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Marine Science
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Agricultural
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Archaeology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Agriculture
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Technology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Tech
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Digital Technology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Industrial Technology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Biotechnology
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Technology
+      keyword: Agri-Tech
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Science
+      keyword: Geography
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Dietetics
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Health and Medicine
+      keyword: Kinesiology
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Public Administration
+      weight: 4.0
+      regex: false
+      fuzzy: false
+    - output_value: Criminal Justice & Legal Studies
+      keyword: Justice
+      weight: 3.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Civil Engineering
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Engineering Management
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Engineering
+      keyword: Industrial Engineering
+      weight: 1.0
+      regex: false
+      fuzzy: false
+    - output_value: Management
+      keyword: Taxation
+      weight: 1.0
+      regex: false
+      fuzzy: false

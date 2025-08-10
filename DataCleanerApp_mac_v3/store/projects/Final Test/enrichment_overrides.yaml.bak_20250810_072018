@@ -1,0 +1,242 @@
+overrides:
+  Area of Study:
+    '301':
+      new_value: Arts
+      timestamp: '2025-08-10T06:19:48.883907'
+    '313':
+      new_value: Cultural Studies
+      timestamp: '2025-08-10T06:19:48.884044'
+    '338':
+      new_value: International Relations
+      timestamp: '2025-08-10T06:19:48.884052'
+    '346':
+      new_value: Social Sciences
+      timestamp: '2025-08-10T06:19:48.884058'
+    '347':
+      new_value: Social Innovation
+      timestamp: '2025-08-10T06:19:48.884064'
+    '2':
+      new_value: Design
+      timestamp: '2025-08-10T06:19:48.884069'
+    '6':
+      new_value: Design
+      timestamp: '2025-08-10T06:19:48.884075'
+    '50':
+      new_value: Community Development
+      timestamp: '2025-08-10T06:19:48.884085'
+    '69':
+      new_value: User Experience Design
+      timestamp: '2025-08-10T06:19:48.884092'
+    '70':
+      new_value: Design
+      timestamp: '2025-08-10T06:19:48.884097'
+    '73':
+      new_value: Sustainability
+      timestamp: '2025-08-10T06:19:48.884102'
+    '74':
+      new_value: Sustainability
+      timestamp: '2025-08-10T06:19:48.884107'
+    '82':
+      new_value: Sustainability
+      timestamp: '2025-08-10T06:19:48.884112'
+    '100':
+      new_value: Environmental Science
+      timestamp: '2025-08-10T06:19:48.884117'
+    '101':
+      new_value: Sustainability
+      timestamp: '2025-08-10T06:19:48.884122'
+    '128':
+      new_value: Latin American Studies
+      timestamp: '2025-08-10T06:19:48.884127'
+    '129':
+      new_value: Languages
+      timestamp: '2025-08-10T06:19:48.884132'
+    '131':
+      new_value: Music Theory and Composition
+      timestamp: '2025-08-10T06:19:48.884137'
+    '142':
+      new_value: Interdisciplinary Studies
+      timestamp: '2025-08-10T06:19:48.884141'
+    '147':
+      new_value: Gender Studies
+      timestamp: '2025-08-10T06:19:48.884146'
+    '148':
+      new_value: Literature
+      timestamp: '2025-08-10T06:19:48.884151'
+    '153':
+      new_value: Engineering
+      timestamp: '2025-08-10T06:19:48.884156'
+    '163':
+      new_value: Sports Science
+      timestamp: '2025-08-10T06:19:48.884161'
+    '168':
+      new_value: Digital Media
+      timestamp: '2025-08-10T06:19:48.884166'
+    '216':
+      new_value: Fashion Design
+      timestamp: '2025-08-10T06:19:48.884171'
+    '217':
+      new_value: Film Studies
+      timestamp: '2025-08-10T06:19:48.884176'
+    '219':
+      new_value: Digital Marketing
+      timestamp: '2025-08-10T06:19:48.884181'
+    '241':
+      new_value: Earth Sciences
+      timestamp: '2025-08-10T06:19:48.884186'
+    '245':
+      new_value: Fine Arts
+      timestamp: '2025-08-10T06:19:48.884191'
+    '251':
+      new_value: Literature
+      timestamp: '2025-08-10T06:19:48.884196'
+    '252':
+      new_value: Fashion Design
+      timestamp: '2025-08-10T06:19:48.884201'
+    '253':
+      new_value: Film Studies
+      timestamp: '2025-08-10T06:19:48.884205'
+    '268':
+      new_value: Computer Science
+      timestamp: '2025-08-10T06:19:48.884210'
+    '271':
+      new_value: International Trade
+      timestamp: '2025-08-10T06:19:48.884216'
+    '300':
+      new_value: Humanities
+      timestamp: '2025-08-10T06:19:48.884221'
+    '305':
+      new_value: Music Performance
+      timestamp: '2025-08-10T06:19:48.884226'
+    '306':
+      new_value: Performing Arts
+      timestamp: '2025-08-10T06:19:48.884231'
+    '312':
+      new_value: Conflict Resolution
+      timestamp: '2025-08-10T06:19:48.884236'
+    '342':
+      new_value: Social Sciences
+      timestamp: '2025-08-10T06:19:48.884241'
+    '343':
+      new_value: Gender Studies
+      timestamp: '2025-08-10T06:19:48.884246'
+    '344':
+      new_value: Gender Studies
+      timestamp: '2025-08-10T06:19:48.884250'
+    '345':
+      new_value: General Studies
+      timestamp: '2025-08-10T06:19:48.884255'
+    '349':
+      new_value: Interdisciplinary Studies
+      timestamp: '2025-08-10T06:19:48.884260'
+    '350':
+      new_value: Liberal Arts
+      timestamp: '2025-08-10T06:19:48.884265'
+    '352':
+      new_value: Social Sciences
+      timestamp: '2025-08-10T06:19:48.884270'
+    '356':
+      new_value: Political Science
+      timestamp: '2025-08-10T06:19:48.884275'
+    '26':
+      new_value: Accounting
+      timestamp: '2025-08-10T06:19:48.884280'
+    '96':
+      new_value: Disability Studies
+      timestamp: '2025-08-10T06:19:48.884285'
+    '149':
+      new_value: Creative Writing
+      timestamp: '2025-08-10T06:19:48.884289'
+    '170':
+      new_value: Genetic Counseling
+      timestamp: '2025-08-10T06:19:48.884294'
+    '102':
+      new_value: Technology Management
+      timestamp: '2025-08-10T06:28:28.890720'
+    '4':
+      new_value: Environmental Science
+      timestamp: '2025-08-10T06:28:28.890892'
+    '35':
+      new_value: Biological Sciences
+      timestamp: '2025-08-10T06:28:28.890900'
+    '41':
+      new_value: Biological Sciences
+      timestamp: '2025-08-10T06:28:28.890906'
+    '54':
+      new_value: Environmental Science
+      timestamp: '2025-08-10T06:28:28.890911'
+    '72':
+      new_value: Journalism
+      timestamp: '2025-08-10T06:28:28.890917'
+    '84':
+      new_value: Language Education
+      timestamp: '2025-08-10T06:28:28.890922'
+    '85':
+      new_value: Urban Planning
+      timestamp: '2025-08-10T06:28:28.890927'
+    '86':
+      new_value: Industrial Design
+      timestamp: '2025-08-10T06:28:28.890932'
+    '88':
+      new_value: Industrial Design
+      timestamp: '2025-08-10T06:28:28.890937'
+    '94':
+      new_value: Communication
+      timestamp: '2025-08-10T06:28:28.890943'
+    '99':
+      new_value: Sports Science
+      timestamp: '2025-08-10T06:28:28.890948'
+    '137':
+      new_value: Education
+      timestamp: '2025-08-10T06:28:28.890954'
+    '144':
+      new_value: Language Education
+      timestamp: '2025-08-10T06:28:28.890960'
+    '159':
+      new_value: Computer Science
+      timestamp: '2025-08-10T06:28:28.890965'
+    '169':
+      new_value: Physical Education
+      timestamp: '2025-08-10T06:28:28.890971'
+    '188':
+      new_value: Industrial Design
+      timestamp: '2025-08-10T06:28:28.890976'
+    '195':
+      new_value: Engineering
+      timestamp: '2025-08-10T06:28:28.890982'
+    '197':
+      new_value: Business Technology
+      timestamp: '2025-08-10T06:28:28.890987'
+    '230':
+      new_value: Computer Science
+      timestamp: '2025-08-10T06:28:28.890992'
+    '247':
+      new_value: Environmental Design
+      timestamp: '2025-08-10T06:28:28.890997'
+    '250':
+      new_value: Environmental Science
+      timestamp: '2025-08-10T06:28:28.891002'
+    '262':
+      new_value: Health Entrepreneurship
+      timestamp: '2025-08-10T06:28:28.891008'
+    '272':
+      new_value: Journalism
+      timestamp: '2025-08-10T06:28:28.891013'
+    '287':
+      new_value: Physics
+      timestamp: '2025-08-10T06:28:28.891018'
+    '49':
+      new_value: Exercise Physiology
+      timestamp: '2025-08-10T06:28:28.891023'
+    '263':
+      new_value: Health Sciences
+      timestamp: '2025-08-10T06:28:28.891028'
+    '266':
+      new_value: Industrial Design
+      timestamp: '2025-08-10T06:28:28.891033'
+    '270':
+      new_value: Interior Design
+      timestamp: '2025-08-10T06:28:28.891038'
+    '288':
+      new_value: Biophysics
+      timestamp: '2025-08-10T06:28:28.891043'
