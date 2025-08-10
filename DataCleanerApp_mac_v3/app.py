@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import io, os, re, json, yaml, hashlib, datetime, glob, subprocess, platform, shutil
+import io, os, re, json, yaml, hashlib, datetime, glob, subprocess, platform, shutil, hmac
+import sqlite3, math
 from rapidfuzz import process, fuzz
 try:
     from rapidfuzz.distance import Levenshtein as RFLev
@@ -22,16 +23,23 @@ from openpyxl import load_workbook  # used in "Other tools" Intake Split
 # =========================================================
 # VERSION / PATHS
 # =========================================================
-APP_VERSION = "6.19 (AI panel wide layout; export/import bottom row; collapsible sections; headers-only mapping; deterministic enrichment; resets; caching; tokens)"
+APP_VERSION = "6.30 (Built-in login; AI vector reuse + SQLite cache; per-run tokens; Rule Generator; wide AI panel; export/import; collapsible sections; deterministic enrichment; caching)"
 BASE_STORE_DIR      = "store"
 PROJECTS_DIR        = os.path.join(BASE_STORE_DIR, "projects")
 GLOBAL_ASSETS_DIR   = os.path.join(BASE_STORE_DIR, "assets")
 GLOBAL_MEMORY_PATH  = os.path.join(BASE_STORE_DIR, "global_mapping_memory.yaml")
+
 os.makedirs(PROJECTS_DIR, exist_ok=True)
 os.makedirs(GLOBAL_ASSETS_DIR, exist_ok=True)
+os.makedirs(BASE_STORE_DIR, exist_ok=True)
 
 OUTPUT_ROOT = "output"
 os.makedirs(OUTPUT_ROOT, exist_ok=True)
+
+# AI persistence and embeddings
+AI_DB_PATH = os.path.join(BASE_STORE_DIR, "ai_cache.sqlite")
+EMBEDDING_MODEL = "text-embedding-3-small"
+SIMILARITY_DEFAULT = 0.80
 
 # Per project file names
 TEMPLATE_FILE   = "template.xlsx"
@@ -90,7 +98,8 @@ SESSION_DEFAULTS = {
     "map_sim_cache": {},   # {headers_hash: {template_col: [(raw_col,score), ...]}}
     # AI Suggestions panel
     "ai_cache": {},        # (proj,target,rowIndex,ctxHash,model)-> {suggested_value,confidence,rationale,new_keywords,suggested_weight}
-    "ai_tokens_used": {"input":0, "output":0, "cached":0},
+    "ai_tokens_used": {"input":0, "output":0, "cached":0},         # cumulative
+    "ai_last_run_tokens": {"input":0,"output":0,"cached":0,"total":0}, # last run
     "ai_form_state": {
         "target": None,
         "model": "gpt-4o-mini",
@@ -104,6 +113,10 @@ SESSION_DEFAULTS = {
     "ai_sel_rows": [],                    # row indexes checked for Apply Override?
     "ai_undo": [],                        # [{"target":..., "changes":[{row,old,new}], "rules_added":[...]}]
     "ai_redo": [],
+    # Simple Auth
+    "authentication_status": None,  # True/False/None
+    "username": None,
+    "name": None,
 }
 def ensure_session_keys():
     for k, v in SESSION_DEFAULTS.items():
@@ -357,7 +370,6 @@ def apply_overrides_to_processed(processed_df, audit_df, overrides):
             audit_df.loc[mask, scol]  = "OVERRIDE"
     return processed_df, audit_df
 def reset_overrides_for_project(project, backup=True):
-    """Clear all overrides for the given project and refresh in-memory frames."""
     ov_path = project_file(project, OVERRIDES_FILE)
     if backup and os.path.exists(ov_path):
         try:
@@ -460,7 +472,208 @@ def context_hash(target: str, ctx: str, matched: dict) -> str:
     return hashlib.md5(base.encode("utf-8")).hexdigest()
 
 # =========================================================
-# TUTORIAL / NAV
+# AI Persistent Cache (SQLite) + Embeddings helpers
+# =========================================================
+def init_ai_db():
+    try:
+        conn = sqlite3.connect(AI_DB_PATH)
+        cur = conn.cursor()
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS suggestions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project TEXT NOT NULL,
+            target TEXT NOT NULL,
+            model TEXT NOT NULL,
+            ctx_hash TEXT NOT NULL,
+            ctx TEXT NOT NULL,
+            embedding TEXT NOT NULL,
+            suggested_value TEXT NOT NULL,
+            confidence REAL NOT NULL,
+            rationale TEXT,
+            new_keywords TEXT,
+            suggested_weight REAL,
+            created_at TEXT NOT NULL,
+            UNIQUE(project, target, model, ctx_hash)
+        )
+        """)
+        conn.commit()
+    finally:
+        try: conn.close()
+        except: pass
+
+def ai_db_upsert_suggestion(project, target, model, ctx_hash, ctx, embedding, rec):
+    try:
+        conn = sqlite3.connect(AI_DB_PATH)
+        cur = conn.cursor()
+        cur.execute("""
+        INSERT OR REPLACE INTO suggestions
+        (project, target, model, ctx_hash, ctx, embedding, suggested_value, confidence, rationale, new_keywords, suggested_weight, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            str(project), str(target), str(model), str(ctx_hash), str(ctx),
+            json.dumps(embedding or []),
+            str(rec.get("suggested_value","")),
+            float(rec.get("confidence", 0.0) or 0.0),
+            str(rec.get("rationale","") or ""),
+            json.dumps(rec.get("new_keywords",[]) or []),
+            float(rec.get("suggested_weight", 3.0) or 3.0),
+            datetime.datetime.utcnow().isoformat()
+        ))
+        conn.commit()
+    except Exception:
+        pass
+    finally:
+        try: conn.close()
+        except: pass
+
+def ai_db_get_exact(project, target, model, ctx_hash):
+    try:
+        conn = sqlite3.connect(AI_DB_PATH)
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT suggested_value, confidence, rationale, new_keywords, suggested_weight
+            FROM suggestions
+            WHERE project=? AND target=? AND model=? AND ctx_hash=?
+            LIMIT 1
+        """, (str(project), str(target), str(model), str(ctx_hash)))
+        row = cur.fetchone()
+        if not row:
+            return None
+        sv, conf, rat, kws_json, w = row
+        return {
+            "suggested_value": sv or "",
+            "confidence": float(conf or 0.0),
+            "rationale": rat or "",
+            "new_keywords": json.loads(kws_json or "[]"),
+            "suggested_weight": float(w or 3.0)
+        }
+    except Exception:
+        return None
+    finally:
+        try: conn.close()
+        except: pass
+
+def ai_db_get_nearest_for_target(project, target, model, limit=300):
+    try:
+        conn = sqlite3.connect(AI_DB_PATH)
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT ctx_hash, ctx, embedding, suggested_value, confidence, rationale, new_keywords, suggested_weight
+            FROM suggestions
+            WHERE project=? AND target=? AND model=?
+            ORDER BY id DESC
+            LIMIT ?
+        """, (str(project), str(target), str(model), int(limit)))
+        rows = cur.fetchall()
+        out = []
+        for r in rows:
+            ch, ctx, emb_json, sv, conf, rat, kws_json, w = r
+            try:
+                emb = json.loads(emb_json or "[]")
+            except:
+                emb = []
+            out.append({
+                "ctx_hash": ch,
+                "ctx": ctx,
+                "embedding": emb,
+                "rec": {
+                    "suggested_value": sv or "",
+                    "confidence": float(conf or 0.0),
+                    "rationale": rat or "",
+                    "new_keywords": json.loads(kws_json or "[]"),
+                    "suggested_weight": float(w or 3.0),
+                }
+            })
+        return out
+    except Exception:
+        return []
+    finally:
+        try: conn.close()
+        except: pass
+
+def cosine_similarity(v1, v2):
+    if not v1 or not v2 or len(v1) != len(v2):
+        return 0.0
+    dot = 0.0; n1 = 0.0; n2 = 0.0
+    for a, b in zip(v1, v2):
+        dot += (a * b); n1 += (a*a); n2 += (b*b)
+    if n1 == 0.0 or n2 == 0.0:
+        return 0.0
+    return dot / (math.sqrt(n1) * math.sqrt(n2))
+
+def get_embedding(client, text: str) -> list:
+    if client is None or not text:
+        return []
+    try:
+        resp = client.embeddings.create(model=EMBEDDING_MODEL, input=text)
+        vec = resp.data[0].embedding
+        return list(vec) if vec else []
+    except Exception:
+        return []
+
+# Initialize persistent AI cache (SQLite)
+try:
+    init_ai_db()
+except Exception:
+    pass
+
+# =========================================================
+# SIMPLE LOGIN (no external dependency)
+# Username: admin@leareraid.com
+# Password: Studyusa@1234
+# You can override via Streamlit secrets: AUTH_USERNAME / AUTH_PASSWORD
+# =========================================================
+def get_valid_credentials():
+    user = "admin@leareraid.com"
+    pwd  = "Studyusa@1234"
+    try:
+        if hasattr(st, "secrets"):
+            user = st.secrets.get("AUTH_USERNAME", user)
+            pwd  = st.secrets.get("AUTH_PASSWORD", pwd)
+    except Exception:
+        pass
+    return str(user), str(pwd)
+
+def check_credentials(input_user: str, input_pwd: str) -> bool:
+    valid_user, valid_pwd = get_valid_credentials()
+    return hmac.compare_digest(input_user.strip(), valid_user) and hmac.compare_digest(input_pwd, valid_pwd)
+
+def render_login():
+    st.title("Sign in")
+    with st.form("login_form", clear_on_submit=False):
+        u = st.text_input("Email", value="", autocomplete="username")
+        p = st.text_input("Password", value="", type="password", autocomplete="current-password")
+        remember = st.checkbox("Remember me", value=False)
+        submitted = st.form_submit_button("Sign in")
+    if submitted:
+        if check_credentials(u, p):
+            st.session_state["authentication_status"] = True
+            st.session_state["username"] = u
+            st.session_state["name"] = u.split("@")[0].title()
+            if remember:
+                st.session_state["remember_me"] = True
+            st.success("Signed in.")
+            st.rerun()
+        else:
+            st.error("Invalid credentials.")
+    st.stop()
+
+# Gate the app
+if st.session_state.get("authentication_status") is not True:
+    render_login()
+
+# Sidebar: Logout
+with st.sidebar:
+    if st.button("Logout"):
+        for k in ["authentication_status","username","name","remember_me"]:
+            st.session_state.pop(k, None)
+        st.success("Signed out.")
+        st.rerun()
+    if st.session_state.get("username"):
+        st.caption(f"Signed in as: {st.session_state.get('username')}")
+
+# =========================================================
+# TUTORIAL / NAV (ONLY AFTER AUTH)
 # =========================================================
 def render_tutorial():
     st.markdown("1) Welcome / Tutorial\n2) Project Setup\n3) Upload Raw\n4) Map Fields\n5) Enrichment Setup\n6) Run Processing\n7) Overrides & Analytics\n8) Post-Processing\n9) Download & Review\n10) Other tools")
@@ -494,7 +707,7 @@ with st.sidebar.expander("Project Status", expanded=False):
 st.sidebar.caption(f"Version {APP_VERSION}")
 
 # =========================================================
-# STEP 0: Welcome (tiny × close over logo)
+# STEP 0: Welcome (logo)
 # =========================================================
 if current_step == "0. Welcome / Tutorial":
     colL, colR = st.columns([1,3])
@@ -502,7 +715,7 @@ if current_step == "0. Welcome / Tutorial":
         logo = current_logo()
         if logo:
             st.markdown("<div class='logo-wrap'>", unsafe_allow_html=True)
-            st.image(logo, use_column_width=True)
+            st.image(logo, use_container_width=True)
             if st.button("×", key="logo_close_btn", help="Remove logo", type="secondary"):
                 try: os.remove(logo)
                 except: pass
@@ -525,8 +738,11 @@ elif current_step == "1. Project Setup":
     projects = sorted([d for d in os.listdir(PROJECTS_DIR) if os.path.isdir(project_dir(d))])
     col1, col2 = st.columns([2,1])
     with col1:
-        sel = st.selectbox("Select Project", [""]+projects,
-                           index=([""]+projects).index(st.session_state["active_project"]) if st.session_state["active_project"] in projects else 0)
+        sel = st.selectbox(
+            "Select Project",
+            [""]+projects,
+            index=([""]+projects).index(st.session_state["active_project"]) if st.session_state["active_project"] in projects else 0
+        )
         if sel and sel != st.session_state["active_project"]:
             st.session_state["active_project"] = sel
             st.session_state["raw_df"] = None
@@ -611,7 +827,7 @@ elif current_step == "1. Project Setup":
     st.info("Go to '2. Upload Raw'.")
 
 # =========================================================
-# STEP 2: UPLOAD RAW (Reset Overrides support)
+# STEP 2: Upload Raw
 # =========================================================
 elif current_step == "2. Upload Raw":
     st.title("Upload Raw Data")
@@ -636,7 +852,6 @@ elif current_step == "2. Upload Raw":
         if rdf is not None and not rdf.empty:
             saved_path = save_uploaded_raw_copy(proj, raw_up)
             st.session_state["raw_df"] = rdf
-            # Auto-reset overrides on new raw upload
             reset_overrides_for_project(proj, backup=True)
             st.success(f"Raw loaded: {len(rdf)} rows / {len(rdf.columns)} cols. Saved: {os.path.basename(saved_path)}. Overrides have been reset.")
 
@@ -660,7 +875,7 @@ elif current_step == "2. Upload Raw":
         st.info("Next: '3. Map Fields'")
 
 # =========================================================
-# STEP 3: MAP FIELDS (headers-only suggestions, stable keys, cached similarity)
+# STEP 3: Map Fields
 # =========================================================
 elif current_step == "3. Map Fields":
     st.title("Map Raw Columns → Template Fields")
@@ -684,10 +899,8 @@ elif current_step == "3. Map Fields":
     st.markdown("<div class='mapping-grid-head'><div>Template Field</div><div>Mapped Raw Column</div><div>Reinforce</div></div>", unsafe_allow_html=True)
     st.markdown("<div class='mapping-grid-body'>", unsafe_allow_html=True)
 
-    # Normalize header
     def norm(h): return re.sub(r'\s+', ' ', re.sub(r'[^\w\s]', ' ', str(h).strip().lower())).strip()
 
-    # Similarity cache by sorted raw headers hash
     headers_hash = hashlib.sha1(("|".join(sorted([norm(c) for c in raw_cols]))).encode("utf-8")).hexdigest()
     sim_cache = st.session_state["map_sim_cache"].get(headers_hash, {})
 
@@ -730,7 +943,7 @@ elif current_step == "3. Map Fields":
                 options,
                 index=idx,
                 label_visibility="collapsed",
-                key=safe_widget_key(tcol)  # stable, unique; no post-creation assignment
+                key=safe_widget_key(tcol)
             )
             new_mapping[tcol] = chosen
             if top5:
@@ -756,7 +969,7 @@ elif current_step == "3. Map Fields":
         st.info("Proceed to '4. Enrichment Setup'.")
 
 # =========================================================
-# STEP 4: ENRICHMENT SETUP
+# STEP 4: Enrichment Setup
 # =========================================================
 elif current_step == "4. Enrichment Setup":
     st.title("Enrichment Setup")
@@ -784,9 +997,12 @@ elif current_step == "4. Enrichment Setup":
     for tgt in targets:
         node = enrichment_cfg["targets"][tgt]
         with st.expander(f"Target: {tgt}", expanded=False):
-            node["sources"] = st.multiselect(f"Raw sources for {tgt}", raw_cols,
-                                             default=[c for c in node.get("sources",[]) if c in raw_cols],
-                                             key=f"sources_{tgt}")
+            node["sources"] = st.multiselect(
+                f"Raw sources for {tgt}",
+                raw_cols,
+                default=[c for c in node.get("sources",[]) if c in raw_cols],
+                key=f"sources_{tgt}"
+            )
             rules_df = pd.DataFrame(node.get("rules",[]))
             if rules_df.empty:
                 rules_df = pd.DataFrame(columns=["output_value","keyword","weight"])
@@ -820,7 +1036,7 @@ elif current_step == "4. Enrichment Setup":
         st.success("Enrichment config saved. Go to '5. Run Processing'.")
 
 # =========================================================
-# STEP 5: RUN PROCESSING (deterministic enrichment)
+# STEP 5: Run Processing (deterministic enrichment)
 # =========================================================
 elif current_step == "5. Run Processing":
     st.title("Run Processing")
@@ -859,7 +1075,6 @@ elif current_step == "5. Run Processing":
             row_kw=[]
             for tgt in targets:
                 if tgt not in out_df.columns: out_df[tgt]=""
-                # build context from sources (lowercased once)
                 sources = enrichment_cfg["targets"][tgt].get("sources", [])
                 if sources:
                     ctx = " ".join(str(raw_row.get(s,"")) for s in sources if s in raw_row.index)
@@ -914,7 +1129,7 @@ elif current_step == "5. Run Processing":
         st.dataframe(prev, use_container_width=True)
 
 # =========================================================
-# STEP 6: OVERRIDES & ANALYTICS (Clean flow; collapsible sections; AI panel wide layout)
+# STEP 6: Overrides & Analytics (AI panel with vector reuse + SQLite)
 # =========================================================
 elif current_step == "6. Overrides & Analytics":
     st.title("Overrides & Analytics")
@@ -955,7 +1170,7 @@ elif current_step == "6. Overrides & Analytics":
     else:
         st.info("No analytics yet.")
 
-    # Helper fns reused in subsections
+    # Helpers reused
     def allowed_outputs_for_target(tgt_name):
         rules = enrichment_cfg.get("targets", {}).get(tgt_name, {}).get("rules", [])
         outs = sorted({str(r.get("output_value","")).strip() for r in rules if str(r.get("output_value","")).strip()})
@@ -990,51 +1205,72 @@ elif current_step == "6. Overrides & Analytics":
     with st.expander("Processed Table (current run)", expanded=False):
         st.dataframe(processed_df, use_container_width=True)
 
-    # ---------------------- 3) AI Suggestions (collapsible; WIDE layout: table on top, controls below, export/import bottom row) ----------------------
+    # 3) AI Suggestions (vector reuse + SQLite + per-run tokens)
     with st.expander("🤖 AI Suggestions (beta) — for MULTI / UNCLASSIFIED", expanded=False):
-        # Ensure state shells
         client, err = get_openai_client()
+
+        # Ensure session defaults
         st.session_state.setdefault("ai_form_state", st.session_state.get("ai_form_state", {}))
         st.session_state.setdefault("ai_table_state", {"records": []})
         st.session_state.setdefault("ai_sel_rows", [])
-        st.session_state.setdefault("ai_tokens_used", {"input":0,"output":0,"cached":0})
+        st.session_state.setdefault("ai_tokens_used", {"input": 0, "output": 0, "cached": 0})
+        st.session_state.setdefault("ai_last_run_tokens", {"input": 0, "output": 0, "cached": 0, "total": 0})
         st.session_state.setdefault("ai_cache", st.session_state.get("ai_cache", {}))
         st.session_state.setdefault("ai_undo", [])
         st.session_state.setdefault("ai_redo", [])
 
-        # Top: Suggestions table placeholder (full width)
         table_holder = st.container()
-
-        # Controls: BELOW the table — compact grid/horizontal layout
         ai_form = st.session_state["ai_form_state"]
 
-        # Row 1 (most-used)
-        c1, c2, c3, c4, c5 = st.columns([1,1.2,1.6,1,1])
+        # Controls row 1
+        c1, c2, c3, c4, c5 = st.columns([1, 1.2, 1.6, 1, 1])
         with c1:
-            ai_form["target"] = st.selectbox("Target", all_targets,
-                                             index=all_targets.index(ai_form.get("target", all_targets[0])) if ai_form.get("target") in all_targets else 0,
-                                             key="ai_panel_target")
+            ai_form["target"] = st.selectbox(
+                "Target",
+                all_targets,
+                index=all_targets.index(ai_form.get("target", all_targets[0])) if ai_form.get("target") in all_targets else 0,
+                key="ai_panel_target",
+            )
         with c2:
-            ai_form["statuses"] = st.multiselect("Statuses", ["UNCLASSIFIED","MULTI"], default=ai_form.get("statuses",["UNCLASSIFIED","MULTI"]), key="ai_panel_statuses")
+            ai_form["statuses"] = st.multiselect(
+                "Statuses",
+                ["UNCLASSIFIED", "MULTI"],
+                default=ai_form.get("statuses", ["UNCLASSIFIED", "MULTI"]),
+                key="ai_panel_statuses",
+            )
         with c3:
-            # Fields to show (wide)
             all_processed_cols = list(processed_df.columns)
             special_cols = ["MatchedKeywords (parsed)"]
-            default_show = ai_form.get("fields_to_show") or [c for c in [ai_form.get("target", all_targets[0]), "MatchedKeywords (parsed)","Course Name"] if (c=="MatchedKeywords (parsed)") or (c in all_processed_cols)]
-            ai_form["fields_to_show"] = st.multiselect("Fields to show", options=special_cols+all_processed_cols, default=default_show, key="ai_panel_fields_to_show")
+            default_show = ai_form.get("fields_to_show") or [
+                c for c in [ai_form.get("target", all_targets[0]), "MatchedKeywords (parsed)", "Course Name"]
+                if (c == "MatchedKeywords (parsed)") or (c in all_processed_cols)
+            ]
+            ai_form["fields_to_show"] = st.multiselect(
+                "Fields to show",
+                options=special_cols + all_processed_cols,
+                default=default_show,
+                key="ai_panel_fields_to_show",
+            )
         with c4:
-            ai_form["model"] = st.selectbox("Model", ["gpt-4o-mini","gpt-4o","gpt-4.1-mini"],
-                                            index=["gpt-4o-mini","gpt-4o","gpt-4.1-mini"].index(ai_form.get("model","gpt-4o-mini")),
-                                            key="ai_panel_model",
-                                            disabled=(client is None or err is not None))
+            ai_form["model"] = st.selectbox(
+                "Model",
+                ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini"],
+                index=["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini"].index(ai_form.get("model", "gpt-4o-mini")),
+                key="ai_panel_model",
+                disabled=(client is None or err is not None),
+            )
         with c5:
-            ai_form["temperature"] = st.slider("Temp", 0.0, 1.0, float(ai_form.get("temperature", 0.2)), 0.05, key="ai_panel_temperature",
-                                               disabled=(client is None or err is not None))
+            ai_form["temperature"] = st.slider(
+                "Temp",
+                0.0, 1.0, float(ai_form.get("temperature", 0.2)), 0.05,
+                key="ai_panel_temperature",
+                disabled=(client is None or err is not None),
+            )
 
-        # Row 2 (batch + toggles)
-        c6, c7, c8, c9, c10 = st.columns([1,1,1,1,1])
+        # Controls row 2
+        c6, c7, c8, c9, c10 = st.columns([1, 1, 1, 1, 1])
         with c6:
-            ai_form["row_cap"] = int(st.number_input("AI Max rows", min_value=1, max_value=10000, value=int(ai_form.get("row_cap",500)), step=10, key="ai_panel_row_cap"))
+            ai_form["row_cap"] = int(st.number_input("AI Max rows", min_value=1, max_value=10000, value=int(ai_form.get("row_cap", 500)), step=10, key="ai_panel_row_cap"))
         with c7:
             ai_form["refresh_cache"] = st.checkbox("Refresh cache", value=bool(ai_form.get("refresh_cache", False)), key="ai_panel_refresh")
         with c8:
@@ -1044,49 +1280,58 @@ elif current_step == "6. Overrides & Analytics":
         with c10:
             gen = st.button("Generate suggestions", key="ai_panel_generate", disabled=(client is None or err is not None))
 
-        # Row 3 (actions)
-        a1, a2, a3, a4 = st.columns([1,1,1,1])
-        with a1:
-            apply_sel = st.button("Apply Selected", key="ai_panel_apply_sel")
-        with a2:
-            apply_all = st.button("Apply All", key="ai_panel_apply_all")
-        with a3:
-            undo_last = st.button("Undo last apply", key="ai_panel_undo")
-        with a4:
-            redo_last = st.button("Redo", key="ai_panel_redo")
+        # Vector Reuse controls
+        vr1, vr2, vr3 = st.columns([1, 1, 1])
+        with vr1:
+            use_vec = st.checkbox("Use vector reuse (embeddings)", value=True, key="ai_use_vector_reuse")
+        with vr2:
+            sim_thresh = st.slider("Similarity threshold", 0.50, 0.95, float(SIMILARITY_DEFAULT), 0.01, key="ai_similarity_threshold")
+        with vr3:
+            vec_k = int(st.number_input("Neighbors to scan (K)", min_value=10, max_value=1000, value=200, step=10, key="ai_vec_topk"))
 
-        # Token line (show after runs)
+        # Show cumulative tokens
         toks = st.session_state["ai_tokens_used"]
-        if (toks.get("input",0) + toks.get("output",0) + toks.get("cached",0)) > 0:
-            total = toks.get("input",0) + toks.get("output",0)
-            st.caption(f"Tokens used: {toks.get('input',0)} input / {toks.get('output',0)} output = {total} total (cached hits: {toks.get('cached',0)})")
+        if (toks.get("input", 0) + toks.get("output", 0) + toks.get("cached", 0)) > 0:
+            total_cum = toks.get("input", 0) + toks.get("output", 0)
+            st.caption(f"Cumulative tokens: {toks.get('input', 0)} input / {toks.get('output', 0)} output = {total_cum} total (cache/reuse hits: {toks.get('cached', 0)})")
 
-        # Suggestion generation (logic unchanged; just triggered by gen)
+        # Show last run tokens
+        last = st.session_state.get("ai_last_run_tokens", {"input": 0, "output": 0, "cached": 0, "total": 0})
+        if (last.get("total", 0) + last.get("cached", 0)) > 0:
+            m1, m2, m3, m4 = st.columns(4)
+            with m1: st.metric("Last run prompt tokens", last.get("input", 0))
+            with m2: st.metric("Last run completion tokens", last.get("output", 0))
+            with m3: st.metric("Last run total tokens", last.get("total", 0))
+            with m4: st.metric("Last run cache/reuse hits", last.get("cached", 0))
+
+        # Generate suggestions
         if gen and client is not None and not err:
             tgt = ai_form["target"]; model = ai_form["model"]; row_cap = int(ai_form["row_cap"])
             allowed = allowed_outputs_for_target(tgt)
             rows_idx_all = _get_candidate_rows(tgt, ai_form["statuses"])
             rows_idx = rows_idx_all[:row_cap]
 
-            suggestions=[]; used_cached=0
+            run_input = 0; run_output = 0; run_cached = 0
+            suggestions = []
+
+            # Preload neighbor pool for vector reuse once per run (per target)
+            neighbor_pool = []
+            if use_vec:
+                neighbor_pool = ai_db_get_nearest_for_target(proj, tgt, model, limit=vec_k)
+
             for ridx in rows_idx:
                 raw_row = st.session_state["raw_df"].iloc[ridx]
                 sources = enrichment_cfg.get("targets", {}).get(tgt, {}).get("sources", [])
-                ctx = build_row_context(raw_row, sources)  # truncates internally
+                ctx = build_row_context(raw_row, sources)
+                chash = context_hash(tgt, ctx, {})
+                key_mem = (proj, tgt, int(ridx), chash, model)
 
-                mkw_col = f"{tgt}_MatchedKeywords"
-                matched = {}
-                try:
-                    matched = json.loads(audit_df.loc[audit_df["RowIndex"]==ridx, mkw_col].values[0])
-                except: matched = {}
-                key = (proj, tgt, int(ridx), context_hash(tgt, ctx, matched), model)
-
-                if (key in st.session_state["ai_cache"]) and (not ai_form.get("refresh_cache", False)):
-                    st.session_state["ai_tokens_used"]["cached"] += 1
-                    used_cached += 1
-                    cached = st.session_state["ai_cache"][key]
+                # 1) In-memory cache hit?
+                if (key_mem in st.session_state["ai_cache"]) and (not ai_form.get("refresh_cache", False)):
+                    st.session_state["ai_tokens_used"]["cached"] += 1; run_cached += 1
+                    cached = st.session_state["ai_cache"][key_mem]
                     sv = cached.get("suggested_value","")
-                    if sv not in allowed: sv = ""  # enforce allowed list
+                    if sv not in allowed: sv = ""
                     suggestions.append({
                         "RowIndex": ridx,
                         "suggested_value": sv,
@@ -1097,6 +1342,56 @@ elif current_step == "6. Overrides & Analytics":
                     })
                     continue
 
+                # 2) Persistent exact match (SQLite) if not refreshing
+                if not ai_form.get("refresh_cache", False):
+                    db_exact = ai_db_get_exact(proj, tgt, model, chash)
+                    if db_exact:
+                        st.session_state["ai_tokens_used"]["cached"] += 1; run_cached += 1
+                        sv = db_exact.get("suggested_value","")
+                        if sv not in allowed: sv = ""
+                        rec = {
+                            "RowIndex": ridx,
+                            "suggested_value": sv,
+                            "confidence": float(db_exact.get("confidence",0)),
+                            "rationale": db_exact.get("rationale",""),
+                            "new_keywords": db_exact.get("new_keywords",[]) or [],
+                            "suggested_weight": safe_float(db_exact.get("suggested_weight",3.0), 3.0)
+                        }
+                        suggestions.append(rec)
+                        st.session_state["ai_cache"][key_mem] = {k:v for k,v in rec.items() if k!="RowIndex"}
+                        continue
+
+                # 3) Vector reuse
+                reused = False
+                curr_emb = []
+                if use_vec and neighbor_pool:
+                    curr_emb = get_embedding(client, ctx)
+                    if curr_emb:
+                        best = None; best_sim = -1.0
+                        for nb in neighbor_pool:
+                            sim = cosine_similarity(curr_emb, nb.get("embedding", []))
+                            if sim > best_sim:
+                                best_sim = sim; best = nb
+                        if best and best_sim >= float(sim_thresh):
+                            sv = best["rec"]["suggested_value"] or ""
+                            if sv not in allowed: sv = ""
+                            rec = {
+                                "RowIndex": ridx,
+                                "suggested_value": sv,
+                                "confidence": float(best["rec"]["confidence"] or 0.0),
+                                "rationale": f"Reused via vector similarity (cos={best_sim:.3f})",
+                                "new_keywords": best["rec"]["new_keywords"] or [],
+                                "suggested_weight": safe_float(best["rec"]["suggested_weight"], 3.0)
+                            }
+                            suggestions.append(rec)
+                            st.session_state["ai_tokens_used"]["cached"] += 1; run_cached += 1
+                            st.session_state["ai_cache"][key_mem] = {k:v for k,v in rec.items() if k!="RowIndex"}
+                            ai_db_upsert_suggestion(proj, tgt, model, chash, ctx, curr_emb or [], rec)
+                            reused = True
+                if reused:
+                    continue
+
+                # 4) Live LLM fallback
                 prompt = f"""
 You are assisting with data enrichment for target: "{tgt}".
 Choose the single best category ONLY from this allowed list:
@@ -1112,34 +1407,60 @@ If unsure, set suggested_value="".
                 try:
                     resp = client.chat.completions.create(
                         model=model,
-                        temperature=float(ai_form.get("temperature",0.2)),
-                        response_format={"type":"json_object"},
+                        temperature=float(ai_form.get("temperature", 0.2)),
+                        response_format={"type": "json_object"},
                         messages=[
-                            {"role":"system","content":"You are a precise, deterministic enrichment assistant. Never propose values outside the allowed list."},
-                            {"role":"user","content":prompt}
-                        ]
+                            {"role": "system", "content": "You are a precise, deterministic enrichment assistant. Never propose values outside the allowed list."},
+                            {"role": "user", "content": prompt},
+                        ],
                     )
+                    # Token usage
                     try:
                         u = resp.usage
-                        st.session_state["ai_tokens_used"]["input"]  += int(getattr(u, "prompt_tokens", 0) or 0)
-                        st.session_state["ai_tokens_used"]["output"] += int(getattr(u, "completion_tokens", 0) or 0)
-                    except: pass
+                        this_in = int(getattr(u, "prompt_tokens", 0) or 0)
+                        this_out = int(getattr(u, "completion_tokens", 0) or 0)
+                        st.session_state["ai_tokens_used"]["input"] += this_in
+                        st.session_state["ai_tokens_used"]["output"] += this_out
+                        run_input += this_in; run_output += this_out
+                    except Exception:
+                        pass
+
                     js = json.loads(resp.choices[0].message.content)
-                    sv = js.get("suggested_value","") or ""
+                    sv = js.get("suggested_value", "") or ""
                     if sv not in allowed:
                         sv = ""
                     rec = {
                         "RowIndex": ridx,
                         "suggested_value": sv,
-                        "confidence": float(js.get("confidence",0) or 0),
-                        "rationale": js.get("rationale",""),
-                        "new_keywords": js.get("new_keywords",[]) or [],
-                        "suggested_weight": safe_float(js.get("suggested_weight",3.0), 3.0)
+                        "confidence": float(js.get("confidence", 0) or 0),
+                        "rationale": js.get("rationale", ""),
+                        "new_keywords": js.get("new_keywords", []) or [],
+                        "suggested_weight": safe_float(js.get("suggested_weight", 3.0), 3.0),
                     }
                     suggestions.append(rec)
-                    st.session_state["ai_cache"][key] = {k:v for k,v in rec.items() if k!="RowIndex"}
+                    st.session_state["ai_cache"][key_mem] = {k:v for k,v in rec.items() if k!="RowIndex"}
+                    if not curr_emb:
+                        curr_emb = get_embedding(client, ctx)
+                    ai_db_upsert_suggestion(proj, tgt, model, chash, ctx, curr_emb or [], rec)
+
                 except Exception as e:
-                    suggestions.append({"RowIndex": ridx, "suggested_value":"", "confidence":0.0, "rationale": f"AI error: {e}", "new_keywords":[], "suggested_weight":3.0})
+                    suggestions.append({
+                        "RowIndex": ridx,
+                        "suggested_value": "",
+                        "confidence": 0.0,
+                        "rationale": f"AI error: {e}",
+                        "new_keywords": [],
+                        "suggested_weight": 3.0
+                    })
+
+            # Store and show last run tokens
+            st.session_state["ai_last_run_tokens"] = {
+                "input": run_input,
+                "output": run_output,
+                "cached": run_cached,
+                "total": run_input + run_output,
+            }
+            st.success(f"AI tokens (this run): prompt {run_input}, completion {run_output}, total {run_input + run_output}. Cache/reuse hits: {run_cached}")
 
             if suggestions:
                 disp = pd.DataFrame(suggestions)
@@ -1157,18 +1478,15 @@ If unsure, set suggested_value="".
                 except: pass
                 st.session_state["ai_table_state"]["records"] = disp.to_dict(orient="records")
 
-        # Render table at the top (full width)
+        # Render table at the top
         with table_holder:
             recs = st.session_state["ai_table_state"].get("records", [])
             if recs:
-                tgt = st.session_state["ai_form_state"]["target"]
                 df_disp = pd.DataFrame(recs)
-                # Apply select-all toggles live
                 if st.session_state.get("ai_panel_select_all_apply", False) and "Apply Override?" in df_disp.columns:
                     df_disp["Apply Override?"] = True
                 if st.session_state.get("ai_panel_select_all_master", False) and "Add to Master?" in df_disp.columns:
                     df_disp["Add to Master?"] = True
-                # Normalize
                 if "New Keywords (parsed)" not in df_disp.columns and "new_keywords" in df_disp.columns:
                     df_disp["New Keywords (parsed)"] = df_disp["new_keywords"].apply(_ai_norm_list_to_str)
                 df_disp["rationale"] = df_disp["rationale"].apply(lambda x: "" if x in (None, np.nan) else str(x))
@@ -1192,7 +1510,18 @@ If unsure, set suggested_value="".
                 st.session_state["ai_table_state"]["records"] = editor.to_dict(orient="records")
                 st.session_state["ai_sel_rows"] = [int(r["RowIndex"]) for _, r in editor.iterrows() if r.get("Apply Override?", False)]
 
-        # Apply logic + AI Enriched preview & comparison (unchanged)
+        # Actions row
+        a1, a2, a3, a4 = st.columns([1,1,1,1])
+        with a1:
+            apply_sel = st.button("Apply Selected", key="ai_panel_apply_sel")
+        with a2:
+            apply_all = st.button("Apply All", key="ai_panel_apply_all")
+        with a3:
+            undo_last = st.button("Undo last apply", key="ai_panel_undo")
+        with a4:
+            redo_last = st.button("Redo", key="ai_panel_redo")
+
+        # Apply logic + preview
         def _apply_overrides(scope_records, tgt_):
             ov = load_overrides(proj); changes=[]
             for r in scope_records:
@@ -1356,7 +1685,7 @@ If unsure, set suggested_value="".
         if 'undo_last' in locals() and undo_last: _do_undo()
         if 'redo_last' in locals() and redo_last: _do_redo()
 
-        # Bottom: Export / Import toolbar (single row, small buttons)
+        # Bottom toolbar: Export / Import
         st.markdown("---")
         st.markdown("<div class='toolbar'>", unsafe_allow_html=True)
 
@@ -1388,7 +1717,7 @@ If unsure, set suggested_value="".
             payload = {"enrichment": enrichment_cfg, "overrides": overrides}
             st.download_button("Download .json", data=json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8"), file_name=f"{proj}_enrichment_overrides.json", key="ai_export_json_dl")
 
-        # Import popovers (or fallbacks)
+        # Import with popovers if available
         has_pop = hasattr(st, "popover")
         if has_pop:
             with st.popover("Import .xlsx"):
@@ -1475,7 +1804,6 @@ If unsure, set suggested_value="".
                     except Exception as e:
                         st.error(f"Import failed: {e}")
         else:
-            # Fallback (no popover): show small toggles
             if st.button("Import .xlsx", key="ai_import_xlsx_btn"):
                 st.session_state["show_imp_xlsx"] = not st.session_state.get("show_imp_xlsx", False)
             if st.button("Import .json", key="ai_import_json_btn"):
@@ -1565,7 +1893,142 @@ If unsure, set suggested_value="".
                         st.error(f"Import failed: {e}")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ---------------------- 4) Inline Overrides (collapsible) ----------------------
+    # 3b) AI Rule Generator (from your data)
+    with st.expander("🧠 AI Rule Generator (from your data)", expanded=False):
+        client_rg, err_rg = get_openai_client()
+        if client_rg is None or err_rg:
+            st.info("OpenAI client not available. Add your OPENAI_API_KEY to use Rule Generator.")
+        else:
+            tgt_rg = st.selectbox("Target to learn rules for", all_targets, key="rg_target")
+            n_per_value = int(st.number_input("Max sample rows per output_value", 5, 200, 20, 5, key="rg_n_per_value"))
+            k_rules = int(st.number_input("Rules to propose per output_value", 1, 20, 5, 1, key="rg_k_rules"))
+            default_weight = float(st.slider("Default weight for new rules", 1.0, 5.0, 3.0, 0.5, key="rg_weight"))
+            go_rg = st.button("Generate candidate rules", key="rg_generate")
+
+            if go_rg:
+                if tgt_rg not in processed_df.columns:
+                    st.warning("Target not in processed data. Run processing first.")
+                else:
+                    # Collect samples grouped by output_value
+                    df_ok = processed_df.copy()
+                    df_ok = df_ok[df_ok[tgt_rg].astype(str).str.strip() != ""]
+                    samples = {}
+                    sources = enrichment_cfg.get("targets", {}).get(tgt_rg, {}).get("sources", [])
+                    for ov, g in df_ok.groupby(df_ok[tgt_rg].astype(str).str.strip()):
+                        take = g.head(n_per_value)
+                        contexts = []
+                        for _, row in take.iterrows():
+                            ctx = " ".join([str(row.get(c, "")) for c in sources]) if sources else " ".join([str(row[c]) for c in row.index])
+                            if ctx.strip():
+                                contexts.append(ctx[:512])
+                        if contexts:
+                            samples[ov] = contexts
+
+                    if not samples:
+                        st.info("No data with non-empty values for this target.")
+                    else:
+                        # Build prompt safely (avoid braces in f-strings)
+                        prompt_blocks = []
+                        for ov, ctxs in samples.items():
+                            block = 'Output Value: "{}"\nExamples:\n- '.format(ov) + "\n- ".join(ctxs[:n_per_value])
+                            prompt_blocks.append(block)
+
+                        prompt_text = (
+                            f'You will propose keywords for enrichment rules for target "{tgt_rg}" from example rows grouped by output_value.\n\n'
+                            f'For EACH output_value below, return up to {k_rules} precise, lowercase keywords or short phrases that strongly indicate that output_value in future rows.\n'
+                            'Return strict JSON object with a top-level key "rules" whose value is a list of objects like: '
+                            '[{"output_value":"...", "keyword":"...", "weight":3}]\n'
+                            f'- use weight {default_weight} unless otherwise obvious from examples; value between 1 and 5.\n'
+                            '- keyword must be lowercase; no punctuation except spaces.\n'
+                            '- avoid duplicates; avoid overly generic words.\n\n'
+                            'Groups:\n'
+                            + "\n\n".join(prompt_blocks)
+                        )
+
+                        try:
+                            resp = client_rg.chat.completions.create(
+                                model=st.session_state["ai_form_state"].get("model", "gpt-4o-mini"),
+                                temperature=0.1,
+                                response_format={"type": "json_object"},
+                                messages=[
+                                    {"role": "system", "content": "You generate compact enrichment rules based on user data. Output strict JSON."},
+                                    {"role": "user", "content": prompt_text},
+                                ],
+                            )
+                            content = resp.choices[0].message.content
+
+                            # Show token usage (optional)
+                            try:
+                                u = resp.usage
+                                st.caption(f"RuleGen tokens: prompt {getattr(u, 'prompt_tokens', 0)} / completion {getattr(u, 'completion_tokens', 0)}")
+                            except Exception:
+                                pass
+
+                            # Parse JSON (supports either {"rules":[...]} or a raw list [...])
+                            rules_json = []
+                            try:
+                                data = json.loads(content)
+                                if isinstance(data, dict) and isinstance(data.get("rules"), list):
+                                    rules_json = data["rules"]
+                                elif isinstance(data, list):
+                                    rules_json = data
+                            except Exception as e:
+                                st.error(f"Could not parse AI response as JSON: {e}")
+                                rules_json = []
+
+                            if not isinstance(rules_json, list) or not rules_json:
+                                st.info("No rules returned.")
+                            else:
+                                # Normalize and show for approval
+                                cand_df = pd.DataFrame(rules_json).fillna("")
+                                if "weight" not in cand_df.columns:
+                                    cand_df["weight"] = default_weight
+                                cand_df["Select?"] = True
+                                st.markdown("Review and approve rules:")
+                                ed = st.data_editor(
+                                    cand_df[["output_value", "keyword", "weight", "Select?"]],
+                                    use_container_width=True,
+                                    hide_index=True,
+                                    key="rg_editor",
+                                    column_config={
+                                        "output_value": st.column_config.TextColumn("Output value", width="large"),
+                                        "keyword": st.column_config.TextColumn("Keyword (lowercase)", width="large"),
+                                        "weight": st.column_config.NumberColumn("Weight", min_value=1.0, max_value=5.0, step=0.5, width="small"),
+                                        "Select?": st.column_config.CheckboxColumn("Select?", width="small"),
+                                    },
+                                )
+                                if st.button("Save selected rules to Enrichment", key="rg_save_rules"):
+                                    cfg = load_enrichment(proj)
+                                    node = cfg["targets"].setdefault(tgt_rg, {"sources": [], "rules": []})
+                                    existing = {(r.get("output_value", "").strip().lower(), r.get("keyword", "").strip().lower()) for r in node.get("rules", [])}
+                                    added = 0
+                                    for _, r in ed.iterrows():
+                                        if not r.get("Select?", False):
+                                            continue
+                                        ovv = str(r.get("output_value", "")).strip()
+                                        kw = str(r.get("keyword", "")).strip().lower()
+                                        w = min(5.0, max(1.0, safe_float(r.get("weight", default_weight), default_weight)))
+                                        if not ovv or not kw:
+                                            continue
+                                        pair = (ovv.strip().lower(), kw)
+                                        if pair in existing:
+                                            continue
+                                        node["rules"].append(
+                                            {
+                                                "output_value": ovv,
+                                                "keyword": kw,
+                                                "weight": w,
+                                                "regex": False,
+                                                "fuzzy": False,
+                                            }
+                                        )
+                                        existing.add(pair)
+                                        added += 1
+                                    save_enrichment(proj, cfg)
+                                    st.success(f"Saved {added} rule(s).")
+                        except Exception as e:
+                            st.error(f"AI Rule Generator failed: {e}")
+    # 4) Inline Overrides
     with st.expander("Inline Overrides", expanded=False):
         st.session_state["ov_wrap_text"] = st.checkbox("Wrap text in table", value=st.session_state.get("ov_wrap_text", True), key="ov_wrap_toggle")
         tgt2 = st.selectbox("Step 1: Select Target Field", all_targets, index=all_targets.index(st.session_state.get("ov_selected_target", all_targets[0])) if st.session_state.get("ov_selected_target") in all_targets else 0, key="ov_target_select")
@@ -1687,7 +2150,7 @@ If unsure, set suggested_value="".
                 st.session_state["enrich_audit_df"] = audit_df2
                 st.success(f"Quick-saved {changes} override(s).")
 
-    # ---------------------- 5) Add Rule to Master (collapsible) ----------------------
+    # 5) Add Rule to Master
     with st.expander("Add Rule to Master (Output + Keyword + Weight)", expanded=False):
         tgt3 = st.selectbox("Target", all_targets, index=all_targets.index(st.session_state.get("ov_selected_target", all_targets[0])) if st.session_state.get("ov_selected_target") in all_targets else 0, key="add_rule_target")
         node_for_add = enrichment_cfg["targets"].get(tgt3, {"sources": [], "rules": []})
@@ -1721,7 +2184,7 @@ If unsure, set suggested_value="".
                     save_enrichment(proj, cfg)
                     st.success("Rule added to enrichment master.")
 
-    # 6) Re-run Enrichment (final section)
+    # 6) Re-run Enrichment with comparison
     st.markdown("---")
     st.subheader("Re-run Enrichment (Respects saved overrides) with Comparison")
     before_ana = compute_analytics(audit_df)
@@ -1785,7 +2248,7 @@ If unsure, set suggested_value="".
         st.success("Re-run complete.")
 
 # =========================================================
-# STEP 7: POST-PROCESSING (kept)
+# STEP 7: Post-Processing
 # =========================================================
 elif current_step == "7. Post-Processing":
     st.title("Post-Processing")
@@ -1852,54 +2315,91 @@ elif current_step == "7. Post-Processing":
                 return s.str.strip().str.lower().str.startswith(v.strip().lower(), na=False)
             return pd.Series([True]*len(s), index=s.index)
 
+        # Rule entries
         for idx, grp in enumerate(groups):
             st.markdown(f"Rule {idx+1}")
-            cols = st.columns([2,3,2,2,2])
+
+            cols = st.columns([2, 3, 2, 2, 2])
+
+            # 1) Target column
             with cols[0]:
                 tcol = st.selectbox(
                     f"Target column #{idx+1}",
-                    [""]+list(df.columns),
-                    index=([""]+list(df.columns)).index(grp["target_col"]) if grp["target_col"] in df.columns else 0,
+                    [""] + list(df.columns),
+                    index=([""] + list(df.columns)).index(grp["target_col"]) if grp["target_col"] in df.columns else 0,
                     key=f"bulk_tcol_{idx}"
                 )
                 grp["target_col"] = tcol
+
+            # 2) Values to match
             with cols[1]:
                 options = sorted(df[tcol].dropna().astype(str).str.strip().unique().tolist()) if tcol else []
-                tvals = st.multiselect(f"Match values #{idx+1}", options, default=[v for v in grp["target_vals"] if v in options], key=f"bulk_tvals_{idx}")
+                tvals = st.multiselect(
+                    f"Match values #{idx+1}",
+                    options,
+                    default=[v for v in grp["target_vals"] if v in options],
+                    key=f"bulk_tvals_{idx}"
+                )
                 grp["target_vals"] = tvals
+
+            # 3) Column to populate
             with cols[2]:
                 pop_options = ["(new column...)"] + list(df.columns)
-                pop_sel = st.selectbox(f"Populate column #{idx+1}", pop_options,
-                                       index=pop_options.index(grp["populate_col"]) if grp["populate_col"] in pop_options else 0,
-                                       key=f"bulk_pcol_{idx}")
+                pop_sel = st.selectbox(
+                    f"Populate column #{idx+1}",
+                    pop_options,
+                    index=pop_options.index(grp["populate_col"]) if grp["populate_col"] in pop_options else 0,
+                    key=f"bulk_pcol_{idx}"
+                )
                 grp["populate_col"] = pop_sel
+
                 if pop_sel == "(new column...)":
-                    new_name = st.text_input(f"New column name #{idx+1}", value=grp["new_populate_col"], key=f"bulk_newp_{idx}")
+                    new_name = st.text_input(
+                        f"New column name #{idx+1}",
+                        value=grp["new_populate_col"],
+                        key=f"bulk_newp_{idx}"
+                    )
                     grp["new_populate_col"] = new_name
+
+            # 4) Value to write
             with cols[3]:
-                val = st.text_input(f"Value to write #{idx+1}", value=grp["value"], key="bulk_val_"+str(idx))
+                val = st.text_input(
+                    f"Value to write #{idx+1}",
+                    value=grp["value"],
+                    key=f"bulk_val_{idx}"
+                )
                 grp["value"] = val
+
+            # 5) Remove rule
             with cols[4]:
                 if st.button("Remove", key=f"bulk_remove_{idx}"):
                     groups.pop(idx)
                     st.rerun()
 
-            fcols = st.columns([2,2,3])
+            # Optional filter row
+            fcols = st.columns([2, 2, 3])
             with fcols[0]:
                 fcol = st.selectbox(
                     f"Filter column (optional) #{idx+1}",
-                    [""]+list(df.columns),
-                    index=([""]+list(df.columns)).index(grp["filter_col"]) if grp["filter_col"] in df.columns else 0,
+                    [""] + list(df.columns),
+                    index=([""] + list(df.columns)).index(grp["filter_col"]) if grp["filter_col"] in df.columns else 0,
                     key=f"bulk_fcol_{idx}"
                 )
                 grp["filter_col"] = fcol
             with fcols[1]:
-                fop = st.selectbox(f"Filter operator #{idx+1}", ["","Contains","Equals","Does not Equal","Begins with","Does not Contain"],
-                                   index=["","Contains","Equals","Does not Equal","Begins with","Does not Contain"].index(grp["filter_op"]) if grp["filter_op"] in ["","Contains","Equals","Does not Equal","Begins with","Does not Contain"] else 0,
-                                   key=f"bulk_fop_{idx}")
+                fop = st.selectbox(
+                    f"Filter operator #{idx+1}",
+                    ["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"],
+                    index=["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"].index(grp["filter_op"]) if grp["filter_op"] in ["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"] else 0,
+                    key=f"bulk_fop_{idx}"
+                )
                 grp["filter_op"] = fop
             with fcols[2]:
-                fval = st.text_input(f"Filter value #{idx+1}", value=grp["filter_val"], key=f"bulk_fval_{idx}")
+                fval = st.text_input(
+                    f"Filter value #{idx+1}",
+                    value=grp["filter_val"],
+                    key=f"bulk_fval_{idx}"
+                )
                 grp["filter_val"] = fval
 
             st.write("---")
@@ -1946,7 +2446,7 @@ elif current_step == "7. Post-Processing":
     st.info("Proceed to '8. Download & Review'.")
 
 # =========================================================
-# STEP 8: DOWNLOAD & REVIEW
+# STEP 8: Download & Review
 # =========================================================
 elif current_step == "8. Download & Review":
     st.title("Download & Review")
@@ -1991,7 +2491,7 @@ elif current_step == "8. Download & Review":
     st.json(run_meta)
 
 # =========================================================
-# STEP 9: OTHER TOOLS (Merge Excel/CSV + Intake Split)
+# STEP 9: OTHER TOOLS
 # =========================================================
 elif current_step == "9. Other tools":
     st.title("Other tools")
