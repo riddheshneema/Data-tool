@@ -619,12 +619,12 @@ except Exception:
 
 # =========================================================
 # SIMPLE LOGIN (no external dependency)
-# Username: admin@leareraid.com
+# Username: admin@learneraid.com
 # Password: Studyusa@1234
 # You can override via Streamlit secrets: AUTH_USERNAME / AUTH_PASSWORD
 # =========================================================
 def get_valid_credentials():
-    user = "admin@leareraid.com"
+    user = "admin@learneraid.com"
     pwd  = "Studyusa@1234"
     try:
         if hasattr(st, "secrets"):
