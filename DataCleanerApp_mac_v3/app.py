@@ -624,7 +624,7 @@ except Exception:
 # You can override via Streamlit secrets: AUTH_USERNAME / AUTH_PASSWORD
 # =========================================================
 def get_valid_credentials():
-    user = "admin@learneraid.com"
+    user = "admin@leareraid.com"
     pwd  = "Studyusa@1234"
     try:
         if hasattr(st, "secrets"):
@@ -1122,7 +1122,7 @@ elif current_step == "5. Run Processing":
     if st.button("Run Processing 🚀", key="run_processing_btn"):
         out_df, audit_df = run_pipeline()
         st.success("Processing complete. Continue to '6. Overrides & Analytics'.")
-        prev = out_df.head(60).copy()
+        prev = out_df.copy()
         for tgt in st.session_state["last_processing_targets"]:
             s = f"{tgt}_Status"
             if s in audit_df.columns: prev[s] = audit_df[s]
@@ -1510,6 +1510,92 @@ If unsure, set suggested_value="".
                 st.session_state["ai_table_state"]["records"] = editor.to_dict(orient="records")
                 st.session_state["ai_sel_rows"] = [int(r["RowIndex"]) for _, r in editor.iterrows() if r.get("Apply Override?", False)]
 
+# === Export: Processed Table + AI Suggestions ===
+            st.divider()
+            if st.button("⬇️ Export Processed + AI (.xlsx)", key="ai_export_processed_plus"):
+                import io
+
+                # 1) Get the current processed table (prefer the version with overrides applied if present)
+                base_df = st.session_state.get("processed_df", None)
+                if base_df is None:
+                    try:
+                        base_df = processed_df.copy()
+                    except Exception:
+                        base_df = None
+
+                if base_df is None:
+                    st.error("Processed table not found. Please run 'Run Processing' first.")
+                else:
+                    df_proc = base_df.copy()
+
+                    # 2) Get the latest suggestions from the table (what you see on screen)
+                    recs_now = st.session_state.get("ai_table_state", {}).get("records", [])
+                    if not recs_now:
+                        st.warning("No AI suggestions to export yet. Click 'Generate suggestions' first.")
+                    else:
+                        sug_df = pd.DataFrame(recs_now).copy()
+
+                        # Ensure RowIndex exists and is integer index for alignment
+                        if "RowIndex" not in sug_df.columns:
+                            st.error("Internal error: 'RowIndex' missing in the suggestions table.")
+                        else:
+                            # Make indexes integer where possible
+                            try:
+                                df_proc.index = df_proc.index.astype(int)
+                            except Exception:
+                                pass
+                            try:
+                                sug_df["RowIndex"] = pd.to_numeric(sug_df["RowIndex"], errors="coerce").astype("Int64")
+                            except Exception:
+                                pass
+                            sug_df = sug_df.set_index("RowIndex", drop=True)
+
+                            # 3) Prepare columns to add
+                            add_map = {
+                                "AI_suggested_value": "suggested_value",
+                                "AI_confidence": "confidence",
+                                "AI_rationale": "rationale",
+                            }
+                            # Create empty columns if they don't exist
+                            for new_col in add_map.keys():
+                                if new_col not in df_proc.columns:
+                                    df_proc[new_col] = ""
+
+                            # 4) Fill those columns for rows that have AI suggestions
+                            try:
+                                sug_df.index = sug_df.index.astype(int)
+                            except Exception:
+                                pass
+                            common_idx = df_proc.index.intersection(sug_df.index)
+                            for new_col, src_col in add_map.items():
+                                if src_col in sug_df.columns:
+                                    df_proc.loc[common_idx, new_col] = sug_df.loc[common_idx, src_col].astype(str)
+
+                            # 5) Offer as Excel and CSV downloads
+                            bio = io.BytesIO()
+                            with pd.ExcelWriter(bio, engine="xlsxwriter") as writer:
+                                df_proc.to_excel(writer, index=False, sheet_name="Processed+AI")
+                            bio.seek(0)
+                            try:
+                                fname = f"{proj}_processed_with_ai.xlsx"
+                            except Exception:
+                                fname = "processed_with_ai.xlsx"
+
+                            st.download_button(
+                                "Download Excel",
+                                data=bio.getvalue(),
+                                file_name=fname,
+                                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                key="dl_processed_plus_ai",
+                            )
+                            st.download_button(
+                                "Download CSV",
+                                data=df_proc.to_csv(index=False).encode("utf-8"),
+                                file_name=fname.replace(".xlsx", ".csv"),
+                                mime="text/csv",
+                                key="dl_processed_plus_ai_csv",
+                            )
+
         # Actions row
         a1, a2, a3, a4 = st.columns([1,1,1,1])
         with a1:
@@ -1685,213 +1771,6 @@ If unsure, set suggested_value="".
         if 'undo_last' in locals() and undo_last: _do_undo()
         if 'redo_last' in locals() and redo_last: _do_redo()
 
-        # Bottom toolbar: Export / Import
-        st.markdown("---")
-        st.markdown("<div class='toolbar'>", unsafe_allow_html=True)
-
-        # Export .xlsx
-        if st.button("Export .xlsx", key="ai_export_xlsx"):
-            def _enrich_to_df(cfg):
-                rows=[]
-                for t, node in (cfg.get("targets", {}) or {}).items():
-                    for r in (node.get("rules",[]) or []):
-                        rows.append({"Target": t, "Output value": r.get("output_value",""), "Keyword": r.get("keyword",""), "Weight": safe_float(r.get("weight",3.0), 3.0)})
-                return pd.DataFrame(rows)
-            def _overrides_to_df(ov):
-                rows=[]
-                for t, mapping in (ov.get("overrides",{}) or {}).items():
-                    for ridx, meta in (mapping or {}).items():
-                        rows.append({"Target": t, "RowIndex": int(ridx), "NewValue": meta.get("new_value",""), "Timestamp": meta.get("timestamp","")})
-                return pd.DataFrame(rows)
-            dfE = _enrich_to_df(enrichment_cfg)
-            dfO = _overrides_to_df(overrides)
-            bio = io.BytesIO()
-            with pd.ExcelWriter(bio, engine="xlsxwriter") as writer:
-                (dfE if not dfE.empty else pd.DataFrame(columns=["Target","Output value","Keyword","Weight"])).to_excel(writer, sheet_name="Enrichment", index=False)
-                (dfO if not dfO.empty else pd.DataFrame(columns=["Target","RowIndex","NewValue","Timestamp"])).to_excel(writer, sheet_name="Overrides", index=False)
-            bio.seek(0)
-            st.download_button("Download .xlsx", data=bio.getvalue(), file_name=f"{proj}_enrichment_overrides.xlsx", key="ai_export_xlsx_dl")
-
-        # Export .json
-        if st.button("Export .json", key="ai_export_json"):
-            payload = {"enrichment": enrichment_cfg, "overrides": overrides}
-            st.download_button("Download .json", data=json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8"), file_name=f"{proj}_enrichment_overrides.json", key="ai_export_json_dl")
-
-        # Import with popovers if available
-        has_pop = hasattr(st, "popover")
-        if has_pop:
-            with st.popover("Import .xlsx"):
-                upx = st.file_uploader("Choose .xlsx", type=["xlsx"], key="ai_import_xlsx")
-                if upx is not None:
-                    try:
-                        wb = pd.read_excel(upx, sheet_name=None)
-                        if "Enrichment" in wb:
-                            dfE = wb["Enrichment"].fillna("")
-                            cfg = load_enrichment(proj)
-                            for _, r in dfE.iterrows():
-                                tgt = str(r.get("Target","")).strip()
-                                ov  = str(r.get("Output value","")).strip()
-                                kw  = re.sub(r"\s+"," ", str(r.get("Keyword","")).strip().lower())
-                                w   = min(5.0, max(1.0, safe_float(r.get("Weight",3.0), 3.0)))
-                                if not tgt or not ov or not kw: continue
-                                node = cfg["targets"].setdefault(tgt, {"sources": [], "rules": []})
-                                pair_found = False
-                                for rr in node["rules"]:
-                                    if rr.get("output_value","").strip().lower() == ov.lower():
-                                        if rr.get("keyword","").strip().lower() == kw or levenshtein(kw, rr.get("keyword","").strip().lower()) < 2:
-                                            rr["keyword"] = kw; rr["weight"] = w; pair_found = True; break
-                                if not pair_found:
-                                    node["rules"].append({"output_value": ov, "keyword": kw, "weight": w, "regex": False, "fuzzy": False})
-                            save_enrichment(proj, cfg); enrichment_cfg = cfg
-                        if "Overrides" in wb:
-                            dfO = wb["Overrides"].fillna("")
-                            ovd = load_overrides(proj)
-                            for _, r in dfO.iterrows():
-                                tgt = str(r.get("Target","")).strip()
-                                if tgt == "": continue
-                                ridx = r.get("RowIndex", None)
-                                if pd.isna(ridx): continue
-                                ridx = int(ridx)
-                                newv = str(r.get("NewValue",""))
-                                ts   = str(r.get("Timestamp","")) or datetime.datetime.utcnow().isoformat()
-                                ovd["overrides"].setdefault(tgt, {})
-                                old = ovd["overrides"][tgt].get(str(ridx))
-                                if not old or (old and ts > old.get("timestamp","")):
-                                    ovd["overrides"][tgt][str(ridx)] = {"new_value": newv, "timestamp": ts}
-                            save_overrides(proj, ovd); overrides = ovd
-                        st.success("Import merged.")
-                    except Exception as e:
-                        st.error(f"Import failed: {e}")
-            with st.popover("Import .json"):
-                upj = st.file_uploader("Choose .json", type=["json"], key="ai_import_json")
-                if upj is not None:
-                    try:
-                        data = json.load(upj)
-                        if isinstance(data, dict):
-                            if "enrichment" in data and isinstance(data["enrichment"], dict):
-                                cfg = load_enrichment(proj)
-                                dfE = []
-                                for t, node in data["enrichment"].get("targets", {}).items():
-                                    for r in (node.get("rules",[]) or []):
-                                        dfE.append({"Target": t, "Output value": r.get("output_value",""), "Keyword": r.get("keyword",""), "Weight": r.get("weight",3.0)})
-                                dfE = pd.DataFrame(dfE).fillna("")
-                                for _, r in dfE.iterrows():
-                                    tgt = str(r.get("Target","")).strip()
-                                    ovv = str(r.get("Output value","")).strip()
-                                    kw  = re.sub(r"\s+"," ", str(r.get("Keyword","")).strip().lower())
-                                    w   = min(5.0, max(1.0, safe_float(r.get("Weight",3.0), 3.0)))
-                                    if not tgt or not ovv or not kw: continue
-                                    node = cfg["targets"].setdefault(tgt, {"sources": [], "rules": []})
-                                    pair_found=False
-                                    for rr in node["rules"]:
-                                        if rr.get("output_value","").strip().lower() == ovv.lower():
-                                            if rr.get("keyword","").strip().lower() == kw or levenshtein(kw, rr.get("keyword","").strip().lower()) < 2:
-                                                rr["keyword"] = kw; rr["weight"] = w; pair_found=True; break
-                                    if not pair_found:
-                                        node["rules"].append({"output_value": ovv, "keyword": kw, "weight": w, "regex": False, "fuzzy": False})
-                                save_enrichment(proj, cfg); enrichment_cfg = cfg
-                            if "overrides" in data and isinstance(data["overrides"], dict):
-                                ovd = load_overrides(proj)
-                                for tgt, mapping in (data["overrides"] or {}).items():
-                                    ovd["overrides"].setdefault(tgt, {})
-                                    for ridx, meta in (mapping or {}).items():
-                                        ts = str(meta.get("timestamp","")) or datetime.datetime.utcnow().isoformat()
-                                        old = ovd["overrides"][tgt].get(str(ridx))
-                                        if not old or (old and ts > old.get("timestamp","")):
-                                            ovd["overrides"][tgt][str(ridx)] = {"new_value": meta.get("new_value",""), "timestamp": ts}
-                                save_overrides(proj, ovd); overrides = ovd
-                        st.success("Import merged.")
-                    except Exception as e:
-                        st.error(f"Import failed: {e}")
-        else:
-            if st.button("Import .xlsx", key="ai_import_xlsx_btn"):
-                st.session_state["show_imp_xlsx"] = not st.session_state.get("show_imp_xlsx", False)
-            if st.button("Import .json", key="ai_import_json_btn"):
-                st.session_state["show_imp_json"] = not st.session_state.get("show_imp_json", False)
-            if st.session_state.get("show_imp_xlsx", False):
-                upx2 = st.file_uploader("Choose .xlsx", type=["xlsx"], key="ai_import_xlsx_fallback")
-                if upx2 is not None:
-                    try:
-                        wb = pd.read_excel(upx2, sheet_name=None)
-                        if "Enrichment" in wb:
-                            dfE = wb["Enrichment"].fillna("")
-                            cfg = load_enrichment(proj)
-                            for _, r in dfE.iterrows():
-                                tgt = str(r.get("Target","")).strip()
-                                ov  = str(r.get("Output value","")).strip()
-                                kw  = re.sub(r"\s+"," ", str(r.get("Keyword","")).strip().lower())
-                                w   = min(5.0, max(1.0, safe_float(r.get("Weight",3.0), 3.0)))
-                                if not tgt or not ov or not kw: continue
-                                node = cfg["targets"].setdefault(tgt, {"sources": [], "rules": []})
-                                pair_found = False
-                                for rr in node["rules"]:
-                                    if rr.get("output_value","").strip().lower() == ov.lower():
-                                        if rr.get("keyword","").strip().lower() == kw or levenshtein(kw, rr.get("keyword","").strip().lower()) < 2:
-                                            rr["keyword"] = kw; rr["weight"] = w; pair_found = True; break
-                                if not pair_found:
-                                    node["rules"].append({"output_value": ov, "keyword": kw, "weight": w, "regex": False, "fuzzy": False})
-                            save_enrichment(proj, cfg); enrichment_cfg = cfg
-                        if "Overrides" in wb:
-                            dfO = wb["Overrides"].fillna("")
-                            ovd = load_overrides(proj)
-                            for _, r in dfO.iterrows():
-                                tgt = str(r.get("Target","")).strip()
-                                if tgt == "": continue
-                                ridx = r.get("RowIndex", None)
-                                if pd.isna(ridx): continue
-                                ridx = int(ridx)
-                                newv = str(r.get("NewValue",""))
-                                ts   = str(r.get("Timestamp","")) or datetime.datetime.utcnow().isoformat()
-                                ovd["overrides"].setdefault(tgt, {})
-                                old = ovd["overrides"][tgt].get(str(ridx))
-                                if not old or (old and ts > old.get("timestamp","")):
-                                    ovd["overrides"][tgt][str(ridx)] = {"new_value": newv, "timestamp": ts}
-                            save_overrides(proj, ovd); overrides = ovd
-                        st.success("Import merged.")
-                    except Exception as e:
-                        st.error(f"Import failed: {e}")
-            if st.session_state.get("show_imp_json", False):
-                upj2 = st.file_uploader("Choose .json", type=["json"], key="ai_import_json_fallback")
-                if upj2 is not None:
-                    try:
-                        data = json.load(upj2)
-                        if isinstance(data, dict):
-                            if "enrichment" in data and isinstance(data["enrichment"], dict):
-                                cfg = load_enrichment(proj)
-                                dfE = []
-                                for t, node in data["enrichment"].get("targets", {}).items():
-                                    for r in (node.get("rules",[]) or []):
-                                        dfE.append({"Target": t, "Output value": r.get("output_value",""), "Keyword": r.get("keyword",""), "Weight": r.get("weight",3.0)})
-                                dfE = pd.DataFrame(dfE).fillna("")
-                                for _, r in dfE.iterrows():
-                                    tgt = str(r.get("Target","")).strip()
-                                    ovv = str(r.get("Output value","")).strip()
-                                    kw  = re.sub(r"\s+"," ", str(r.get("Keyword","")).strip().lower())
-                                    w   = min(5.0, max(1.0, safe_float(r.get("Weight",3.0), 3.0)))
-                                    if not tgt or not ovv or not kw: continue
-                                    node = cfg["targets"].setdefault(tgt, {"sources": [], "rules": []})
-                                    pair_found=False
-                                    for rr in node["rules"]:
-                                        if rr.get("output_value","").strip().lower() == ovv.lower():
-                                            if rr.get("keyword","").strip().lower() == kw or levenshtein(kw, rr.get("keyword","").strip().lower()) < 2:
-                                                rr["keyword"] = kw; rr["weight"] = w; pair_found=True; break
-                                    if not pair_found:
-                                        node["rules"].append({"output_value": ovv, "keyword": kw, "weight": w, "regex": False, "fuzzy": False})
-                                save_enrichment(proj, cfg); enrichment_cfg = cfg
-                            if "overrides" in data and isinstance(data["overrides"], dict):
-                                ovd = load_overrides(proj)
-                                for tgt, mapping in (data["overrides"] or {}).items():
-                                    ovd["overrides"].setdefault(tgt, {})
-                                    for ridx, meta in (mapping or {}).items():
-                                        ts = str(meta.get("timestamp","")) or datetime.datetime.utcnow().isoformat()
-                                        old = ovd["overrides"][tgt].get(str(ridx))
-                                        if not old or (old and ts > old.get("timestamp","")):
-                                            ovd["overrides"][tgt][str(ridx)] = {"new_value": meta.get("new_value",""), "timestamp": ts}
-                                save_overrides(proj, ovd); overrides = ovd
-                        st.success("Import merged.")
-                    except Exception as e:
-                        st.error(f"Import failed: {e}")
-        st.markdown("</div>", unsafe_allow_html=True)
 
     # 3b) AI Rule Generator (from your data)
     with st.expander("🧠 AI Rule Generator (from your data)", expanded=False):
@@ -2252,53 +2131,114 @@ If unsure, set suggested_value="".
 # =========================================================
 elif current_step == "7. Post-Processing":
     st.title("Post-Processing")
-    proj = st.session_state["active_project"]
-    if not proj: st.stop()
-    if st.session_state.get("processed_df") is None:
-        st.warning("Run processing first."); st.stop()
-    df = st.session_state["processed_df"].copy()
-    st.subheader("Preview")
-    st.dataframe(df.head(400), use_container_width=True)
 
-    tabs = st.tabs(["Split","Regex Replace","Strip","Bulk Populate by Target Values"])
+    # Show current project if any, but DO NOT require one
+    proj = st.session_state.get("active_project") or ""
+    if proj:
+        st.caption(f"Project: {proj}")
+    else:
+        st.caption("Project: (none) — you can upload a file below to start post-processing.")
+
+    # 1) Upload option to REPLACE the current table for Post-Processing
+    st.subheader("Upload to replace the current table (optional)")
+    uploaded_xlsx = st.file_uploader(
+        "Upload Excel (.xlsx) to use for Post-Processing",
+        type=["xlsx"],
+        key="pp_upload_xlsx",
+        help="If you upload a file here, it will replace the current table used for Post-Processing."
+    )
+
+    if uploaded_xlsx is not None:
+        try:
+            # Read the first sheet by default
+            df_up = pd.read_excel(uploaded_xlsx)
+            st.session_state["processed_df"] = df_up
+            # Mark that this table is now sourced from upload (helpful if no project exists)
+            st.session_state["pp_source"] = f"Upload: {uploaded_xlsx.name}"
+            if not proj:
+                st.session_state["active_project"] = "(ad-hoc)"
+            st.success(f"Replaced current table with '{uploaded_xlsx.name}' — {len(df_up)} rows, {len(df_up.columns)} columns.")
+        except Exception as e:
+            st.error(f"Could not read the uploaded Excel file: {e}")
+
+    # 2) Ensure we have a table to work with (from either processing or upload)
+    if st.session_state.get("processed_df") is None:
+        st.warning("No data loaded. Upload an Excel file above or run the earlier steps to create a processed table.")
+        st.stop()
+
+    # Work on a copy
+    df = st.session_state["processed_df"].copy()
+
+    # 3) Preview
+    st.subheader("Preview")
+    st.dataframe(df.head(15000), use_container_width=True)
+
+    # Ensure bulk groups exist in session state
+    st.session_state.setdefault("bulk_groups", [])
+    groups = st.session_state["bulk_groups"]
+
+    # 4) Tools
+    tabs = st.tabs(["Split", "Regex Replace", "Strip", "Bulk Populate by Target Values"])
+
+    # Split
     with tabs[0]:
-        col = st.selectbox("Column", [""]+list(df.columns), key="pp_split_col")
+        col = st.selectbox("Column", [""] + list(df.columns), key="pp_split_col")
         delim = st.text_input("Delimiter", value=",", key="pp_split_delim")
-        max_parts = st.number_input("Max parts (0=auto)", min_value=0, value=0, key="pp_split_maxparts")
+        max_parts = int(st.number_input("Max parts (0=auto)", min_value=0, value=0, key="pp_split_maxparts"))
         prefix = st.text_input("Prefix", value="Split_", key="pp_split_prefix")
         keep = st.checkbox("Keep Original", value=True, key="pp_split_keep")
         if st.button("Apply Split", key="pp_split_apply"):
-            if col:
+            if not col:
+                st.warning("Pick a column to split.")
+            else:
                 parts = df[col].astype(str).str.split(delim)
-                max_len = max(len(p) if isinstance(p,list) else 1 for p in parts)
-                if max_parts>0: max_len = min(max_len, max_parts)
+                max_len = max(len(p) if isinstance(p, list) else 1 for p in parts)
+                if max_parts > 0:
+                    max_len = min(max_len, max_parts)
                 for i in range(max_len):
-                    df[f"{prefix}{i+1}"] = parts.apply(lambda lst: lst[i].strip() if isinstance(lst,list) and i < len(lst) else "")
-                if not keep: df.drop(columns=[col], inplace=True)
+                    df[f"{prefix}{i+1}"] = parts.apply(lambda lst: lst[i].strip() if isinstance(lst, list) and i < len(lst) else "")
+                if not keep:
+                    df.drop(columns=[col], inplace=True)
                 st.session_state["processed_df"] = df
                 st.success("Split applied.")
+
+    # Regex Replace
     with tabs[1]:
         rcols = st.multiselect("Columns", list(df.columns), key="pp_regex_columns")
-        patt  = st.text_input("Pattern", value=r"[$,]", key="pp_regex_pattern")
-        repl  = st.text_input("Replacement", value="", key="pp_regex_repl")
-        ignore= st.checkbox("Ignore Case", value=True, key="pp_regex_ic")
+        patt = st.text_input("Pattern (regex)", value=r"[$,]", key="pp_regex_pattern")
+        repl = st.text_input("Replacement", value="", key="pp_regex_repl")
+        ignore = st.checkbox("Ignore Case", value=True, key="pp_regex_ic")
         if st.button("Apply Regex Replace", key="pp_regex_apply"):
-            flags = re.IGNORECASE if ignore else 0
-            for c in rcols:
-                df[c] = df[c].astype(str).apply(lambda x: re.sub(patt, repl, x, flags=flags))
-            st.session_state["processed_df"] = df
-            st.success("Regex replace applied.")
+            if not rcols:
+                st.warning("Select at least one column.")
+            else:
+                flags = re.IGNORECASE if ignore else 0
+                try:
+                    # Precompile for performance/validation
+                    regex_obj = re.compile(patt, flags)
+                    for c in rcols:
+                        df[c] = df[c].astype(str).apply(lambda x: regex_obj.sub(repl, x))
+                    st.session_state["processed_df"] = df
+                    st.success("Regex replace applied.")
+                except re.error as e:
+                    st.error(f"Invalid regex pattern: {e}")
+
+    # Strip
     with tabs[2]:
         scols = st.multiselect("Columns", list(df.columns), key="pp_strip_columns")
         chars = st.text_input("Characters to strip", value="$€£ ", key="pp_strip_chars")
         if st.button("Apply Strip", key="pp_strip_apply"):
-            for c in scols:
-                df[c] = df[c].astype(str).str.strip(chars)
-            st.session_state["processed_df"] = df
-            st.success("Strip applied.")
+            if not scols:
+                st.warning("Select at least one column.")
+            else:
+                for c in scols:
+                    df[c] = df[c].astype(str).str.strip(chars)
+                st.session_state["processed_df"] = df
+                st.success("Strip applied.")
+
+    # Bulk Populate by Target Values
     with tabs[3]:
-        st.caption("Define rules: target column & values, optional filter, then column to populate and a value to write.")
-        groups = st.session_state["bulk_groups"]
+        st.caption("Create simple rules to populate a column based on values in a target column, with an optional filter.")
 
         def build_filter_mask(series: pd.Series, op: str, val: str) -> pd.Series:
             s = series.astype(str)
@@ -2312,21 +2252,28 @@ elif current_step == "7. Post-Processing":
             if op == "Does not Equal":
                 return s.str.strip().str.casefold() != v.strip().casefold()
             if op == "Begins with":
-                return s.str.strip().str.lower().str.startswith(v.strip().lower(), na=False)
-            return pd.Series([True]*len(s), index=s.index)
+                return s.str.strip().str.lower().str.startswith(v.strip().lower())
+            return pd.Series([True] * len(s), index=s.index)
 
-        # Rule entries
+        # Render rule entries
+        if not groups:
+            # Start with one empty rule for convenience
+            groups.append({
+                "target_col": "", "target_vals": [], "populate_col": "", "new_populate_col": "",
+                "value": "", "filter_col": "", "filter_op": "", "filter_val": ""
+            })
+
         for idx, grp in enumerate(groups):
             st.markdown(f"Rule {idx+1}")
-
             cols = st.columns([2, 3, 2, 2, 2])
 
             # 1) Target column
             with cols[0]:
+                tcol_options = [""] + list(df.columns)
                 tcol = st.selectbox(
                     f"Target column #{idx+1}",
-                    [""] + list(df.columns),
-                    index=([""] + list(df.columns)).index(grp["target_col"]) if grp["target_col"] in df.columns else 0,
+                    tcol_options,
+                    index=tcol_options.index(grp.get("target_col", "")) if grp.get("target_col", "") in tcol_options else 0,
                     key=f"bulk_tcol_{idx}"
                 )
                 grp["target_col"] = tcol
@@ -2334,10 +2281,11 @@ elif current_step == "7. Post-Processing":
             # 2) Values to match
             with cols[1]:
                 options = sorted(df[tcol].dropna().astype(str).str.strip().unique().tolist()) if tcol else []
+                defaults = [v for v in grp.get("target_vals", []) if v in options]
                 tvals = st.multiselect(
                     f"Match values #{idx+1}",
                     options,
-                    default=[v for v in grp["target_vals"] if v in options],
+                    default=defaults,
                     key=f"bulk_tvals_{idx}"
                 )
                 grp["target_vals"] = tvals
@@ -2348,7 +2296,7 @@ elif current_step == "7. Post-Processing":
                 pop_sel = st.selectbox(
                     f"Populate column #{idx+1}",
                     pop_options,
-                    index=pop_options.index(grp["populate_col"]) if grp["populate_col"] in pop_options else 0,
+                    index=pop_options.index(grp.get("populate_col", "")) if grp.get("populate_col", "") in pop_options else 0,
                     key=f"bulk_pcol_{idx}"
                 )
                 grp["populate_col"] = pop_sel
@@ -2356,7 +2304,7 @@ elif current_step == "7. Post-Processing":
                 if pop_sel == "(new column...)":
                     new_name = st.text_input(
                         f"New column name #{idx+1}",
-                        value=grp["new_populate_col"],
+                        value=grp.get("new_populate_col", ""),
                         key=f"bulk_newp_{idx}"
                     )
                     grp["new_populate_col"] = new_name
@@ -2365,7 +2313,7 @@ elif current_step == "7. Post-Processing":
             with cols[3]:
                 val = st.text_input(
                     f"Value to write #{idx+1}",
-                    value=grp["value"],
+                    value=grp.get("value", ""),
                     key=f"bulk_val_{idx}"
                 )
                 grp["value"] = val
@@ -2379,37 +2327,39 @@ elif current_step == "7. Post-Processing":
             # Optional filter row
             fcols = st.columns([2, 2, 3])
             with fcols[0]:
+                fcol_options = [""] + list(df.columns)
                 fcol = st.selectbox(
                     f"Filter column (optional) #{idx+1}",
-                    [""] + list(df.columns),
-                    index=([""] + list(df.columns)).index(grp["filter_col"]) if grp["filter_col"] in df.columns else 0,
+                    fcol_options,
+                    index=fcol_options.index(grp.get("filter_col", "")) if grp.get("filter_col", "") in fcol_options else 0,
                     key=f"bulk_fcol_{idx}"
                 )
                 grp["filter_col"] = fcol
             with fcols[1]:
+                ops = ["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"]
                 fop = st.selectbox(
                     f"Filter operator #{idx+1}",
-                    ["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"],
-                    index=["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"].index(grp["filter_op"]) if grp["filter_op"] in ["", "Contains", "Equals", "Does not Equal", "Begins with", "Does not Contain"] else 0,
+                    ops,
+                    index=ops.index(grp.get("filter_op", "")) if grp.get("filter_op", "") in ops else 0,
                     key=f"bulk_fop_{idx}"
                 )
                 grp["filter_op"] = fop
             with fcols[2]:
                 fval = st.text_input(
                     f"Filter value #{idx+1}",
-                    value=grp["filter_val"],
+                    value=grp.get("filter_val", ""),
                     key=f"bulk_fval_{idx}"
                 )
                 grp["filter_val"] = fval
 
             st.write("---")
 
-        c1, c2 = st.columns([1,2])
+        c1, c2 = st.columns([1, 2])
         with c1:
             if st.button("Add more fields", key="bulk_add_more"):
                 groups.append({
-                    "target_col":"", "target_vals":[], "populate_col":"", "new_populate_col":"",
-                    "value":"", "filter_col":"", "filter_op":"", "filter_val":""
+                    "target_col": "", "target_vals": [], "populate_col": "", "new_populate_col": "",
+                    "value": "", "filter_col": "", "filter_op": "", "filter_val": ""
                 })
         with c2:
             if st.button("Populate Now", key="bulk_populate_now"):
@@ -2419,32 +2369,43 @@ elif current_step == "7. Post-Processing":
                     tvals = grp.get("target_vals") or []
                     pcol_sel = grp.get("populate_col") or ""
                     new_p = grp.get("new_populate_col") or ""
-                    val = grp.get("value","")
+                    val = grp.get("value", "")
                     fcol = grp.get("filter_col") or ""
-                    fop  = grp.get("filter_op") or ""
+                    fop = grp.get("filter_op") or ""
                     fval = grp.get("filter_val") or ""
-                    if not tcol or not tvals: continue
+
+                    if not tcol or not tvals:
+                        continue
+
+                    # Decide populate column
                     if pcol_sel == "(new column...)":
-                        if not new_p.strip(): continue
+                        if not new_p.strip():
+                            continue
                         pcol = new_p.strip()
-                        if pcol not in df.columns: df[pcol] = ""
+                        if pcol not in df.columns:
+                            df[pcol] = ""
                     else:
                         pcol = pcol_sel
+
+                    # Build mask
                     mask_target = df[tcol].astype(str).str.strip().isin([str(v).strip() for v in tvals])
                     if fcol and fop and fval != "":
                         mask_filter = build_filter_mask(df[fcol], fop, fval)
                         mask_final = mask_target & mask_filter
                     else:
                         mask_final = mask_target
+
                     df.loc[mask_final, pcol] = val
                     changes += int(mask_final.sum())
+
                 st.session_state["processed_df"] = df
                 st.success(f"Populated {changes} cell(s).")
 
-    st.subheader("Updated Preview (Top 300)")
-    st.dataframe(st.session_state["processed_df"].head(300), use_container_width=True)
+    # 5) Updated preview and next-step hint
+    st.subheader("Updated Preview (Top 15000)")
+    st.dataframe(st.session_state["processed_df"].head(15000), use_container_width=True)
     st.info("Proceed to '8. Download & Review'.")
-
+    
 # =========================================================
 # STEP 8: Download & Review
 # =========================================================
@@ -2756,3 +2717,4 @@ elif current_step == "9. Other tools":
         st.info("Select a tool above to launch.")
 
 st.caption(f"© 2025 Learner Connect Data Optimising Tool — Version {APP_VERSION}")
+
