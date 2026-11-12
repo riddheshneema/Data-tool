@@ -1,37 +1,56 @@
-Plot,Type,Area (sq ft),Area (sq m),Fronts on
-R1,River-front villa,7248,673.4,River drive (13 m)
-R2,River-front villa,7230,671.7,River drive (13 m)
-R3,River-front villa,7250,673.6,River drive (13 m)
-R4,River-front villa,7229,671.6,River drive (13 m)
-R5,River-front villa,7245,673.1,River drive (13 m)
-R6,River-front villa,7251,673.7,River drive (13 m)
-R7,River-front villa,7235,672.2,River drive (13 m)
-R8,River-front villa,5702,529.7,Area-2 garden lane (13 m)
-R9,River-front villa,5986,556.1,Area-2 garden lane (13 m)
-R10,River-front villa,5694,529.0,Area-2 garden lane (13 m)
-R11,River-front villa,7247,673.3,River drive (13 m)
-R12,River-front villa,6214,577.3,River drive (13 m)
-R13,River-front villa,5789,537.8,Area-3 river lane (13 m)
-R14,River-front villa,6576,611.0,Area-3 river lane (13 m)
-G1,Garden villa,4319,401.2,River drive (13 m)
-G2,Garden villa,4502,418.3,River drive (13 m)
-G3,Garden villa,4486,416.8,River drive (13 m)
-G4,Garden villa,4486,416.8,River drive (13 m)
-G5,Garden villa,4485,416.7,River drive (13 m)
-G6,Garden villa,4487,416.8,Resort avenue (15 m)
-G7,Garden villa,4503,418.3,Resort avenue (15 m)
-G8,Garden villa,4486,416.7,River drive (13 m)
-G9,Garden villa,4501,418.2,River drive (13 m)
-G10,Garden villa,4115,382.3,Resort avenue (15 m)
-G11,Garden villa,4487,416.8,Resort avenue (15 m)
-G12,Garden villa,5401,501.8,River drive (13 m)
-G13,Garden villa,4487,416.8,Resort avenue (15 m)
-G14,Garden villa,4456,414.0,Resort avenue (15 m)
-G15,Garden villa,4487,416.8,Resort avenue (15 m)
-G16,Garden villa,4503,418.3,Resort avenue (15 m)
-G17,Garden villa,4089,379.9,River drive (13 m)
-G18,Garden villa,4503,418.3,Entry boulevard (24 m)
-G19,Garden villa,4503,418.3,East lane (13 m)
-G20,Garden villa,4098,380.7,Entry boulevard (24 m)
-G21,Garden villa,4359,405.0,East lane (13 m)
-G22,Garden villa,3691,342.9,East lane (13 m)
+Plot,Type,Area (sq ft),Area (sq m),Road frontage (m)
+R1,River-front villa,4367,405.7,19.0
+R2,River-front villa,5814,540.1,19.7
+R3,River-front villa,5550,515.6,19.7
+R4,River-front villa,5892,547.4,19.7
+R5,River-front villa,6176,573.8,19.6
+R6,River-front villa,5174,480.7,19.8
+R7,River-front villa,6952,645.9,19.5
+R8,River-front villa,6538,607.4,19.5
+R9,River-front villa,6315,586.7,19.6
+R10,River-front villa,5567,517.2,9.8
+R11,River-front villa,7962,739.7,19.3
+R12,River-front villa,4583,425.8,19.9
+R13,River-front villa,6167,572.9,8.6
+R14,River-front villa,6019,559.2,19.6
+R15,River-front villa,5015,465.9,19.8
+R16,River-front villa,9724,903.4,19.1
+R17,River-front villa,5375,499.3,19.7
+R18,River-front villa,8005,743.7,39.4
+V1,Villa,6753,627.4,14.8
+V2,Villa,5219,484.8,72.3
+V3,Villa,3555,330.3,13.3
+V4,Villa,5000,464.5,16.5
+V5,Villa,4479,416.1,42.2
+V6,Villa,4009,372.5,14.6
+V7,Villa,5000,464.5,16.5
+V8,Villa,8249,766.4,64.6
+V9,Villa,6555,609.0,40.4
+V10,Villa,5731,532.4,16.5
+V11,Villa,6000,557.4,16.0
+V12,Villa,5000,464.5,16.5
+V13,Villa,5000,464.5,16.5
+V14,Villa,8223,763.9,52.9
+V15,Villa,4212,391.3,41.2
+V16,Villa,4134,384.1,20.2
+V17,Villa,5000,464.5,16.4
+V18,Villa,5000,464.5,16.4
+V19,Villa,5000,464.5,16.4
+V20,Villa,5000,464.5,16.4
+V21,Villa,7077,657.5,62.0
+V22,Villa,6500,603.9,60.4
+V23,Villa,5000,464.5,16.5
+V24,Villa,5000,464.5,16.5
+V25,Villa,6111,567.7,13.5
+V26,Villa,7699,715.3,24.1
+V27,Villa,4612,428.5,16.5
+V28,Villa,4613,428.6,16.5
+V29,Villa,5075,471.5,16.5
+V30,Villa,4848,450.4,16.5
+V31,Villa,7396,687.1,53.3
+V32,Villa,5000,464.5,16.5
+V33,Villa,5000,464.5,16.5
+V34,Villa,4761,442.3,20.8
+V35,Villa,6698,622.3,47.5
+V36,Villa,5442,505.6,16.5
+V37,Villa,7241,672.7,23.8
