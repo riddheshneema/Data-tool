@@ -33,9 +33,9 @@ V12,Villa,4050,376.2,14.9,Yes,garden median
 V13,Villa,4050,376.2,15.0,Yes,garden median
 V14,Villa,4050,376.2,15.0,Yes,garden median
 V15,Villa,4050,376.3,15.0,Yes,garden median
-V16,Villa,4050,376.3,14.9,Yes,garden median
+V16,Villa,4050,376.3,42.7,Yes,garden median
 V17,Villa,4050,376.3,14.8,Yes,park / landscaped green
-V18,Villa,3949,366.9,15.8,Yes,park / landscaped green
+V18,Villa,3949,366.9,40.2,Yes,park / landscaped green
 V19,Villa,5793,538.2,70.3,No,
 V20,Villa,6414,595.8,53.8,Yes,garden median
 V21,Villa,4050,376.3,14.9,Yes,garden median
@@ -46,17 +46,18 @@ V25,Villa,4050,376.2,14.9,Yes,garden median
 V26,Villa,4050,376.2,14.9,Yes,garden median
 V27,Villa,4050,376.2,15.0,Yes,garden median
 V28,Villa,4050,376.2,15.0,Yes,garden median
-V29,Villa,5729,532.3,23.9,Yes,garden median
-V30,Villa,11227,1043.0,16.0,No,
-V31,Villa,5765,535.6,16.9,No,
+V29,Villa,4472,415.5,41.4,No,
+V30,Villa,4478,416.1,14.3,No,
+V31,Villa,4478,416.1,13.0,No,
 V32,Villa,4050,376.3,14.9,Yes,garden median
 V33,Villa,4050,376.3,14.9,Yes,garden median
 V34,Villa,3616,335.9,16.6,No,
 V35,Villa,4050,376.3,14.9,Yes,garden median
 V36,Villa,4050,376.3,14.9,Yes,garden median
 V37,Villa,4181,388.5,29.8,Yes,garden median
-V38,Villa,4522,420.1,16.0,Yes,garden median
+V38,Villa,4522,420.1,16.0,No,
 V39,Villa,5870,545.4,33.7,No,
 V40,Villa,4050,376.3,14.9,No,
 V41,Villa,6489,602.9,20.4,Yes,park / landscaped green
 V42,Villa,4911,456.2,50.9,Yes,garden median
+V43,Villa,4471,415.3,20.0,No,
