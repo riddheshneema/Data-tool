@@ -50,15 +50,15 @@ Rule numbers are BVN 2012 unless stated otherwise.
 | # | Rule | Requirement | This layout | Result |
 |---|---|---|---|---|
 | 1 | 38(4)(a) | Every plot on a public street at least 7.5 m wide | Every plot fronts a 12 m road. Network is fully connected to the gate. | Pass |
-| 2 | 53 | Detached plot above 225 m², frontage above 12 m | Smallest plot 336 m² (V34, 3,616 sq ft). Smallest frontage 13.0 m (V31). At least 12 m of every frontage faces a full 12 m road. | Pass |
-| 3 | 38 Table 3 + 38(6) | 12 m road allowed up to 400 m, measured from the farthest plot to the public street | All roads 12 m. Farthest plot V43 is 360 m from the colony gate. RD is about 385 m end to end. | Pass, if the access road is public |
+| 2 | 53 | Detached plot above 225 m², frontage above 12 m | Smallest plot 336 m² (V34, 3,616 sq ft). Shortest front side 13.2 m (R13, 43.2 ft); the four plots on S5 have at least 45 ft (13.7 m). Measured side by side on the dimension sheets. | Pass |
+| 3 | 38 Table 3 + 38(6) | 12 m road allowed up to 400 m, measured from the farthest plot to the public street | All roads 12 m. Farthest plot V43 is 360 m from the colony gate. Rule 38(6) measures from the farthest plot to the public street, so every 12 m road is within the limit. | Pass, if the access road is public |
 | 4 | 43 | Cul-de-sacs only on straight roads; turning space at least 121 m² with no side under 11 m | Two dead ends, both straight: the S2 stub serving V38 (42 m) and the RD south end (66 m). A 12 × 11 m (132 m²) turning space fits inside the road at each. No median runs into them. | Pass |
 | 5 | 43 | Same rule | S1 is joined to S2 by the 12 m S5 link road, so it is no longer a dead end | Pass |
 | 6 | 45 | Roads meet at right angles where possible; avoid junctions under 30° | All junctions 68°–94° | Pass |
 | 7 | 46 + 56 | Front 3.6 m on a 12 m street; rear 3 m (plots over 225 m²); sides 3 m both sides (detached) | Every plot keeps a buildable footprint of at least 114 m² (V37) and at least 7.7 m wide | Pass |
 | 8 | 47(2) | Open space at least 10% of the layout | Riverside garden 6,156 m² = 12.9%. No other park. | Pass on quantity |
 | 9 | 47(3) | Length "generally" no more than 2.5 × average width; other shapes at T&CP's discretion | Garden is about 462 m long and averages 13.3 m wide (about 35:1) | T&CP's call |
-| 10 | 47(5) | Independent access to each open space; building line 3 m from it | 7 ft (2.1 m) walkway, 31 m long, from RD between R11 and R12. For comparison, Rule 38(5) asks 1.5 m for a pathway up to 30 m. River plots keep 3 m rear setbacks. | Pass (a wider or second walkway would make it safer) |
+| 10 | 47(5) | Independent access to each open space; building line 3 m from it | 7 ft (2.1 m) walkway, 31 m long, from RD between R10 and R11. For comparison, Rule 38(5) asks 1.5 m for a pathway up to 30 m. River plots keep 3 m rear setbacks. | Pass (a wider or second walkway would make it safer) |
 | 11 | 50(b) | No building site within 9 m of the highest water level of a stream, or 15 m of a river | Every plot is 15.0 m from the drawn stream edge; buildings at least 18 m | Pass (survey the high-water line) |
 | 12 | 49, Table 6 | Facilities by population (indicative) | About 62 plots, roughly 310 residents. Below every threshold. | Pass |
 | 13 | 61 | FAR 1.25 | Up to 1.25 × plot area (e.g. 5,000 sq ft on a 4,000 sq ft plot) | Info |
@@ -86,10 +86,10 @@ Rule numbers are BVN 2012 unless stated otherwise.
   - That triangle was the colony's only compact park, 1% of the area. The open space now rests entirely on the riverside garden.
   - Keeping the park would not have changed the outcome, because 1% is far below 10%.
 - **SE block, now facing the S5 link road:**
-  - V29: 4,472 sq ft (corner of S2 and S5).
-  - V30: 4,478 sq ft.
-  - V31: 4,478 sq ft.
-  - V43: 4,471 sq ft (new).
+  - V29: 3,835 sq ft, a corner plot (84.2 ft on S2, 42.7 ft on S5).
+  - V30: 4,592 sq ft (45.2 ft on S5).
+  - V31: 5,133 sq ft (45.2 ft on S5).
+  - V43: 4,340 sq ft, new (63.3 ft on S5).
   - This replaces the earlier V29/V30/V31 split, which needed S1 as a dead end.
 
 ## Result
@@ -108,7 +108,7 @@ Rule numbers are BVN 2012 unless stated otherwise.
 ## If T&CP objects
 
 - **Riverside garden not accepted as open space.** About 4,775 m² (10%) of compact parks would be needed. That is about 11 plots, and sellable area would fall to roughly 54%. Raise it first at the pre-application meeting.
-- **More access to the garden wanted.** Add a second 7 ft walkway between R3 and R4. It costs about 690 sq ft.
+- **More access to the garden wanted.** Add a second 7 ft walkway on the north run, between R3 and R4. It costs about 690 sq ft.
 
 ## Paperwork before you apply
 
