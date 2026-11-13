@@ -34,3 +34,21 @@
    © OpenStreetMap contributors.
 
 Provenance, models and full prompts: `credits.md` in this folder.
+
+---
+
+## `reference/` (in the zip only — background, not for the brochure pages)
+
+| File | What it is |
+|---|---|
+| `ge_01_overlay_aerial.png` | The plan laid over the real land, 60° tilt looking north-west |
+| `ge_02_land_aerial.png` | The same land bare — real stream, treeline, fields |
+| `ge_03_overlay_topdown.png` | Whole colony straight down, plan overlaid |
+| `ge_04_approach.png` | Main-road junction and the excavated approach road |
+| `river_width_map.png` | Measured stream width along the OSM centreline, with candidate weir throats |
+| `river_width_stats.json` | The same measurements as data |
+| `STREAM_FINDINGS.md` | Method, numbers and conclusions on the stream |
+
+**The four `ge_*` files are Google Earth screen captures.** They are working references only —
+do not place them in the brochure. `river_width_map.png` is over Esri imagery and may be used if
+credited (Esri, Maxar, Earthstar Geographics; centreline © OpenStreetMap contributors).
