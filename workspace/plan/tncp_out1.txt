@@ -1,0 +1,44 @@
+layout (colony) area 47,747 m2 = 11.80 ac = 4.775 ha
+plots 63.3% | road ROW 21.6% (of which garden medians 1.3%) | promenade 12.9% | walkway 0.14% | other green/leftover 2.05%
+
+ROAD NETWORK: junctions 22 | dead ends 4
+  ACCESS segment  119.6 m | width (5th pct, mid-segment)  15.0 m | ends: junction
+  ACCESS segment    0.4 m | width (5th pct, mid-segment)  15.0 m | ends: junction
+  ACCESS segment    0.2 m | width (5th pct, mid-segment)  15.0 m | ends: junction
+  ACCESS segment    0.4 m | width (5th pct, mid-segment)  15.0 m | ends: junction
+  ACCESS segment    0.2 m | width (5th pct, mid-segment)  14.5 m | ends: junction
+  ACCESS segment  160.8 m | width (5th pct, mid-segment)  12.0 m | ends: junction
+  ACCESS segment    0.2 m | width (5th pct, mid-segment)  15.0 m | ends: junction
+  ACCESS segment    9.2 m | width (5th pct, mid-segment)   4.0 m | ends: dead-end
+  RD     segment   60.4 m | width (5th pct, mid-segment)  11.5 m | ends: dead-end
+  RD     segment    0.4 m | width (5th pct, mid-segment)  15.8 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  15.8 m | ends: junction
+  RD     segment   92.9 m | width (5th pct, mid-segment)  11.7 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  16.2 m | ends: junction
+  RD     segment   12.2 m | width (5th pct, mid-segment)   6.3 m | ends: dead-end
+  RD     segment   78.2 m | width (5th pct, mid-segment)  11.9 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  12.6 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  12.6 m | ends: junction
+  RD     segment    0.4 m | width (5th pct, mid-segment)  13.1 m | ends: junction
+  RD     segment   78.9 m | width (5th pct, mid-segment)  11.8 m | ends: junction
+  RD     segment    0.4 m | width (5th pct, mid-segment)  14.1 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  14.1 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  13.5 m | ends: junction
+  RD     segment   69.7 m | width (5th pct, mid-segment)  11.7 m | ends: junction
+  RD     segment    0.4 m | width (5th pct, mid-segment)  14.0 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  14.0 m | ends: junction
+  RD     segment    0.2 m | width (5th pct, mid-segment)  13.5 m | ends: junction
+  S2     segment   35.7 m | width (5th pct, mid-segment)   9.2 m | ends: dead-end
+  S2     segment    0.2 m | width (5th pct, mid-segment)  13.9 m | ends: junction
+  S2     segment    0.4 m | width (5th pct, mid-segment)  13.9 m | ends: junction
+  S2     segment    0.2 m | width (5th pct, mid-segment)  14.0 m | ends: junction
+  S2     segment   75.3 m | width (5th pct, mid-segment)  11.8 m | ends: junction
+  S3     segment  105.1 m | width (5th pct, mid-segment)  11.8 m | ends: junction
+  S4     segment   68.8 m | width (5th pct, mid-segment)  11.8 m | ends: junction
+  link   segment    0.4 m | width (5th pct, mid-segment)  19.0 m | ends: junction
+  link   segment    0.5 m | width (5th pct, mid-segment)  18.5 m | ends: junction
+  link   segment  188.1 m | width (5th pct, mid-segment)  11.1 m | ends: junction
+  road totals: {'ACCESS': 291, 'RD': 396, 'S4': 69, 'link': 189, 'S3': 105, 'S2': 112}
+  dead ends (name, length from the junction centre-line to the road end, end point): [('RD', 66, (286, -261)), ('S2', 42, (397, -206))]
+  ignored skeleton spurs (bends, edge jogs): [('ACCESS', 15, (339, -359)), ('RD', 18, (170, -176))]
+  farthest plots from the colony gate along 12 m roads (m): [('V43', 360), ('R16', 355), ('V18', 353), ('V39', 351), ('R15', 347)]

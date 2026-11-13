@@ -1,0 +1,63 @@
+Plot,Type,Area (sq ft),Area (sq m),Road frontage (m),Garden view,Faces
+R1,River-front villa,9875,917.4,23.6,Yes,river promenade
+R2,River-front villa,7170,666.1,23.6,Yes,river promenade
+R3,River-front villa,7193,668.2,23.3,Yes,river promenade
+R4,River-front villa,6943,645.1,22.0,Yes,river promenade
+R5,River-front villa,7351,682.9,40.2,Yes,river promenade
+R6,River-front villa,5351,497.2,19.6,Yes,river promenade
+R7,River-front villa,5487,509.8,20.1,Yes,river promenade
+R8,River-front villa,5275,490.1,17.3,Yes,river promenade
+R9,River-front villa,7505,697.2,25.3,Yes,river promenade
+R10,River-front villa,10853,1008.2,23.8,Yes,river promenade
+R11,River-front villa,5354,497.4,17.5,Yes,river promenade
+R12,River-front villa,5375,499.4,17.8,Yes,river promenade
+R13,River-front villa,10707,994.7,13.7,Yes,river promenade
+R14,River-front villa,9805,910.9,23.8,Yes,river promenade
+R15,River-front villa,5761,535.2,17.0,Yes,river promenade
+R16,River-front villa,6211,577.0,20.6,Yes,river promenade
+R17,River-front villa,6152,571.5,24.3,Yes,river promenade
+R18,River-front villa,6151,571.4,26.9,Yes,river promenade
+R19,River-front villa,5989,556.4,28.1,Yes,river promenade
+V1,Villa,5452,506.5,56.6,Yes,garden median
+V2,Villa,4206,390.8,42.0,Yes,garden median
+V3,Villa,4207,390.8,19.3,No,
+V4,Villa,4354,404.5,41.5,Yes,garden median
+V5,Villa,6080,564.9,49.3,Yes,garden median
+V6,Villa,4050,376.3,15.0,Yes,garden median
+V7,Villa,4119,382.7,30.0,Yes,park / landscaped green
+V8,Villa,5659,525.7,44.9,Yes,garden median
+V9,Villa,4050,376.3,14.9,Yes,garden median
+V10,Villa,4050,376.3,14.9,Yes,garden median
+V11,Villa,4050,376.2,14.9,Yes,garden median
+V12,Villa,4050,376.2,14.9,Yes,garden median
+V13,Villa,4050,376.2,15.0,Yes,garden median
+V14,Villa,4050,376.2,15.0,Yes,garden median
+V15,Villa,4050,376.3,15.0,Yes,garden median
+V16,Villa,4050,376.3,42.7,Yes,garden median
+V17,Villa,4050,376.3,14.8,Yes,park / landscaped green
+V18,Villa,3949,366.9,40.2,Yes,park / landscaped green
+V19,Villa,5793,538.2,70.3,No,
+V20,Villa,6414,595.8,53.8,Yes,garden median
+V21,Villa,4050,376.3,14.9,Yes,garden median
+V22,Villa,4050,376.3,14.9,Yes,garden median
+V23,Villa,4050,376.3,14.9,Yes,garden median
+V24,Villa,4050,376.3,14.9,Yes,garden median
+V25,Villa,4050,376.2,14.9,Yes,garden median
+V26,Villa,4050,376.2,14.9,Yes,garden median
+V27,Villa,4050,376.2,15.0,Yes,garden median
+V28,Villa,4050,376.2,15.0,Yes,garden median
+V29,Villa,3835,356.3,39.5,No,
+V30,Villa,4592,426.6,14.8,No,
+V31,Villa,5133,476.9,14.8,No,
+V32,Villa,4050,376.3,14.9,Yes,garden median
+V33,Villa,4050,376.3,14.9,Yes,garden median
+V34,Villa,3616,335.9,16.6,No,
+V35,Villa,4050,376.3,14.9,Yes,garden median
+V36,Villa,4050,376.3,14.9,Yes,garden median
+V37,Villa,4181,388.5,29.8,Yes,garden median
+V38,Villa,4522,420.1,16.0,No,
+V39,Villa,5870,545.4,33.7,No,
+V40,Villa,4050,376.3,14.9,No,
+V41,Villa,6489,602.9,20.4,Yes,park / landscaped green
+V42,Villa,4911,456.2,50.9,Yes,garden median
+V43,Villa,4340,403.2,19.6,No,
