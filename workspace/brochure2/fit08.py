@@ -2,13 +2,14 @@
 import sys, os, math, pickle, json, numpy as np, warnings; warnings.filterwarnings('ignore')
 SP = '/tmp/claude-0/-home-user-Data-tool/dbda6b63-1fb5-5cd3-90ba-f6a3071a9612/scratchpad/'
 PLAN = SP + 'plan/'; OUT = SP + 'brochure2/'
+os.makedirs(SP + 'review', exist_ok=True)
 sys.path.insert(0, PLAN); os.chdir(PLAN)
 exec(open('dims.py').read().split("if __name__=='__main__':")[0])
 from PIL import Image, ImageDraw
 from shapely import affinity
 from shapely.geometry import Polygon, MultiPolygon
 from skimage import measure, morphology
-im = np.array(Image.open(SP + 'zip_e834f9c/08_master_plan.png').convert('RGB')).astype(int)
+im = np.array(Image.open(SP + '../brochure/source/images/08_master_plan.png').convert('RGB')).astype(int)
 H, W, _ = im.shape
 def near(c, tol=14): return (np.abs(im - np.array(c)).sum(2) < tol)
 body = np.zeros((H, W), bool); body[100:1930, :] = True
@@ -65,8 +66,8 @@ stream = unary_union(polys).simplify(0.4)
 print('stream area m2 %.0f, bounds %s' % (stream.area, [round(v) for v in stream.bounds]))
 pickle.dump(dict(stream=stream, fit=p), open(OUT + 'stream08.pkl', 'wb'))
 # check overlay: plots and roads from the plan, drawn on 08
-ov = Image.open(SP + 'zip_e834f9c/08_master_plan.png').convert('RGB'); d = ImageDraw.Draw(ov)
+ov = Image.open(SP + '../brochure/source/images/08_master_plan.png').convert('RGB'); d = ImageDraw.Draw(ov)
 for g in list(PL.values()) + [C]:
     for q in getattr(T(g, p), 'geoms', [T(g, p)]): d.line([tuple(c) for c in q.exterior.coords], fill=(220, 0, 160), width=3)
 for q in getattr(T(stream, p), 'geoms', [T(stream, p)]): d.line([tuple(c) for c in q.exterior.coords], fill=(255, 0, 0), width=3)
-ov.resize((1600, 1337)).save(SP + 'review/fit08.jpg', quality=85)
+os.makedirs(SP + 'review', exist_ok=True); ov.resize((1600, 1337)).save(SP + 'review/fit08.jpg', quality=85)

@@ -25,7 +25,7 @@
 
 `plan_consumer.svg` is the same plan redrawn for consumers, with the same plot geometry, the same colours and north up. Its stream line is taken from the `08` image itself (fitted to the plan at IoU 0.83). It has no dimensions or technical labels.
 
-`tools/fit08.py` and `tools/plan_consumer.py` record how the plan was made. Both need the layout workspace (`dims.py` and the plan geometry), which is not in this repo.
+To make it again, run `workspace/brochure2/plan_consumer.py` (see `workspace/README.md`). Then copy the new `plan_consumer.svg` here.
 
 ## Rebuild
 
