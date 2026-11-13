@@ -43,6 +43,7 @@ body { font-family: Inter, sans-serif; color: var(--ink); -webkit-font-smoothing
 .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--iv); break-after: page; page-break-after: always }
 .abs { position: absolute }
 .eyebrow { font-size: 7.4pt; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--sf); line-height: 1 }
+h1, h2, h3, b, em, .quote { font-variant-numeric: lining-nums }
 h2 { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 30pt; line-height: 1.0; color: var(--g7); margin: 3.2mm 0 4.2mm; letter-spacing: -.005em }
 h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 17pt; line-height: 1.05; color: var(--g7) }
 .lead { font-size: 9.8pt; line-height: 1.62; color: #3a4943 }
@@ -152,7 +153,7 @@ html = f'''<!doctype html><html><head><meta charset="utf-8"><title>Maheshwar Gre
   <div class="facts">
     <div><b>{S["plots"]}</b><span>farmhouse plots</span></div>
     <div><b>{S["garden_ac"]:.1f} acres</b><span>streamside garden</span></div>
-    <div><b>2 hours</b><span>from Indore</span></div>
+    <div><b>1&ndash;1&frac12; hrs</b><span>from Indore</span></div>
   </div>
   <div class="legal">Proposed plotted development &middot; MP RERA Reg. No. ________________</div>
 </section>
@@ -189,7 +190,7 @@ html = f'''<!doctype html><html><head><meta charset="utf-8"><title>Maheshwar Gre
 <section class="page p3">
   <div class="abs" style="left:14mm;top:19mm;width:96mm">
     <div class="eyebrow">Location</div>
-    <h2>About two hours from Indore</h2>
+    <h2>1 to 1&frac12; hours from Indore</h2>
     <p class="lead">Maheshwar Greens is at Jalkoti, just west of Maheshwar town. From Indore it is an easy drive south-west on the Agra&ndash;Mumbai highway to Dhamnod, and on to Maheshwar.</p>
     <div class="journey">
       <div class="stop"><div class="dot"></div><div><b>Indore</b><span>City, airport and railway station</span></div><div class="tagk">Start</div></div>
@@ -202,7 +203,7 @@ html = f'''<!doctype html><html><head><meta charset="utf-8"><title>Maheshwar Gre
   <div class="abs" style="right:14mm;top:19mm;width:80mm">
     {fig("p3_entrance.jpg", 80, 107.14)}
     <p class="cap"><b>Arrival.</b> The entrance gateway, as planned.</p>
-    <div class="stat"><div><b>95 km</b><span>approx., by road</span></div><div><b>2 hours</b><span>approx., by car</span></div></div>
+    <div class="stat"><div><b>95 km</b><span>approx., by road</span></div><div><b>1&ndash;1&frac12; hrs</b><span>by car</span></div></div>
   </div>
   <div class="nearband">
     <div class="eyebrow">Around Maheshwar Greens</div>
@@ -212,7 +213,7 @@ html = f'''<!doctype html><html><head><meta charset="utf-8"><title>Maheshwar Gre
       <div>{ic("waves")}<b>Sahastradhara</b><em><small>&nbsp;</small>in Jalkoti</em><span>The Narmada&rsquo;s &ldquo;thousand streams&rdquo;</span></div>
       <div>{ic("museum")}<b>Mandu</b><em><small>about</small>1&frac14; hours</em><span>Hilltop fort city of the Malwa sultans</span></div>
       <div>{ic("temple")}<b>Omkareshwar</b><em><small>about</small>65 km</em><span>Jyotirlinga temple on a Narmada island</span></div>
-      <div>{ic("plane")}<b>Indore airport</b><em><small>about</small>2 hours</em><span>Devi Ahilyabai Holkar International Airport</span></div>
+      <div>{ic("plane")}<b>Indore airport</b><em><small>about</small>1&frac12; hours</em><span>Devi Ahilyabai Holkar International Airport</span></div>
     </div>
     <p class="small" style="margin-top:6mm">Distances and times are approximate and depend on the route and traffic. *Straight-line distance.</p>
     <div class="run">Maheshwar Greens</div><div class="pg">03</div>
