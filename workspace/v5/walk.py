@@ -38,16 +38,23 @@ def walk(ring, outward, taken, step=0.5, D=D, RMIN=0.85):
     start = 0.0; tries = 0
     while t < L - W * 0.5:
         p0, p1 = pt(t), pt(t + W); n0, n1 = nrm(t), nrm(t + W)
-        if P.get('rectonly', 1):
+        rb = math.dist((p0.x + n0[0] * D, p0.y + n0[1] * D), (p1.x + n1[0] * D, p1.y + n1[1] * D)) / (p0.distance(p1) or 1)
+        if P.get('rectonly', 1) and not (P.get('hybrid', 0) and 1.02 < rb <= P.get('rmax', 1.4)):
             fx, fy = p1.x - p0.x, p1.y - p0.y; fl = math.hypot(fx, fy) or 1
             nm = (-fy / fl, fx / fl)
             if nm[0] * (n0[0] + n1[0]) + nm[1] * (n0[1] + n1[1]) < 0: nm = (-nm[0], -nm[1])
             n0 = n1 = nm
         q = Polygon([(p0.x, p0.y), (p1.x, p1.y), (p1.x + n1[0] * D, p1.y + n1[1] * D), (p0.x + n0[0] * D, p0.y + n0[1] * D)])
+        if outward and P.get('deep', 0):
+            for Dx in [D + k * 0.5 for k in range(int((P['deep'] - D) / 0.5), 0, -1)]:
+                qx = Polygon([(p0.x, p0.y), (p1.x, p1.y), (p1.x + n1[0] * Dx, p1.y + n1[1] * Dx), (p0.x + n0[0] * Dx, p0.y + n0[1] * Dx)])
+                qx2 = qx.difference(roads)
+                if qx.is_valid and not qx2.is_empty and ap.contains(max(getattr(qx2, 'geoms', [qx2]), key=lambda g: g.area)):
+                    q = qx; break
         q2 = q.difference(roads) if q.is_valid else q
         q2 = max(getattr(q2, 'geoms', [q2]), key=lambda g: g.area) if not q2.is_empty else q2
         if q.is_valid and not q2.is_empty and q2.area > 0.97 * q.area and q2.area / q2.minimum_rotated_rectangle.area >= RMIN and ap.contains(q2) and not any(q2.intersection(x).area > 0.5 for x in taken[-60:] + out[-3:]):
-            QUADS[q2.wkb] = (p0.distance(p1), Point(p0.x + n0[0] * D, p0.y + n0[1] * D).distance(Point(p1.x + n1[0] * D, p1.y + n1[1] * D)), D, q2.area / q.area); out.append(q2); t += W
+            QUADS[q2.wkb] = (p0.distance(p1), math.dist(q.exterior.coords[2], q.exterior.coords[3]), Point(q.exterior.coords[3]).distance(p0), q2.area / q.area); out.append(q2); t += W
         else: t += step
     return out
 QUADS = {}
@@ -58,6 +65,37 @@ for ring in frontage_rings(QA, 'out'):
 taken = plots[:]
 for ring in frontage_rings(QA, 'in'):
     plots += walk(ring, False, taken, D=P.get('Din', D), RMIN=P.get('rin', 0.92))
+
+def walk_fill(ring, outward, occ, D, rmax=1.45, step=0.5):
+    """Second pass: fill gaps at bends with tapered (fan) plots, square to the road at each side."""
+    L = ring.length; out = []; t = 0.0
+    ccw = Polygon(ring).exterior.is_ccw
+    def pt(s): return ring.interpolate(s % L)
+    def nrm(s):
+        a, b = pt(s - 0.8), pt(s + 0.8); tx, ty = b.x - a.x, b.y - a.y; n = math.hypot(tx, ty) or 1
+        nx, ny = (ty / n, -tx / n) if ccw else (-ty / n, tx / n)
+        return (nx, ny) if outward else (-nx, -ny)
+    while t < L:
+        placed = False
+        for w_ in (13.716, 13.0, 12.5, 15.0, 16.5):
+            p0, p1 = pt(t), pt(t + w_); n0, n1 = nrm(t), nrm(t + w_)
+            b0 = (p0.x + n0[0] * D, p0.y + n0[1] * D); b1 = (p1.x + n1[0] * D, p1.y + n1[1] * D)
+            q = Polygon([(p0.x, p0.y), (p1.x, p1.y), b1, b0])
+            if not q.is_valid: continue
+            front, back = p0.distance(p1), math.dist(b0, b1)
+            if not (0.8 <= back / front <= rmax): continue
+            q2 = q.difference(roads); q2 = max(getattr(q2, 'geoms', [q2]), key=lambda g: g.area) if not q2.is_empty else q2
+            if q2.is_empty or q2.area < 0.97 * q.area or q2.area * SQFT < 3000 or not ap.contains(q2): continue
+            if q2.intersection(occ).area > 0.5: continue
+            QUADS[q2.wkb] = (front, back, D, q2.area / q.area); out.append(q2); occ = occ.union(q2); t += w_; placed = True; break
+        if not placed: t += step
+    return out, occ
+if P.get('fill', 0):
+    occ = unary_union(plots + [roads])
+    for ring in frontage_rings(QA, 'out'):
+        add, occ = walk_fill(ring, True, occ, D, P.get('rmax', 1.45)); plots += add
+    for ring in frontage_rings(QA, 'in'):
+        add, occ = walk_fill(ring, False, occ, P.get('Din', D), P.get('rmax', 1.45)); plots += add
 for i, lr in enumerate(extra_roads):
     for side in (1, -1):
         pass

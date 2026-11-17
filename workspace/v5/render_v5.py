@@ -99,7 +99,7 @@ fp(box(x0, y0 + (y1 - y0) * 0.45, x0 + (x1 - x0) * 0.55, y1).intersection(cb), z
 for p in info:
     q = p['poly']; ax.fill(*q.exterior.xy, color='#fdf1d6', ec='#8a6d3b', lw=0.7, zorder=3)
     c = q.representative_point()
-    dim = f"{round(p['front'] * FT)}×{round(p['depth'] * FT)}" if abs(p['back'] - p['front']) < 1.0 else f"{round(p['front'] * FT)}/{round(p['back'] * FT)}×{round(p['depth'] * FT)}"
+    dim = f"{round(p['front'] * FT)}×{round(p['depth'] * FT)}" if abs(p['back'] - p['front']) < 0.6 else f"{round(p['front'] * FT)}/{round(p['back'] * FT)}×{round(p['depth'] * FT)}"
     ax.text(c.x, c.y + 1.8, str(p['no']), fontsize=6.3, ha='center', va='center', zorder=6, weight='bold', color='#4a3a22')
     ax.text(c.x, c.y - 2.4, dim, fontsize=4.2, ha='center', va='center', zorder=6, color='#7a6a52')
 ax.plot(*K.exterior.xy, color='#1e3a2b', lw=2.2, zorder=6)
@@ -114,8 +114,8 @@ ax.plot([380, 430], [-250, -250], color='k', lw=2); ax.text(405, -255, '50 m', h
 ax.text(170, -258, 'RESORT LAND (separate project)', fontsize=8, color='#7a6a42')
 ax.set_xlim(108, 472); ax.set_ylim(-268, -38); ax.set_aspect('equal'); ax.axis('off')
 NA = K.area; tot = sum(p['area'] for p in info)
-rect_n = sum(abs(p['back'] - p['front']) < 1.0 for p in info)
-std = sum(abs(p['front'] * FT - 45) < 1.5 and abs(p['back'] - p['front']) < 1.0 for p in info)
+rect_n = sum(abs(p['back'] - p['front']) < 0.6 for p in info)
+std = sum(abs(p['front'] * FT - 45) < 1.5 and abs(p['back'] - p['front']) < 0.6 for p in info)
 rows = [(f'Plots ({len(info)})', tot / SQFT), ('Roads (12 m spine + link, 9 m loop)', roads.area), ('Stream park and edge greens', park.area), ('Lawn court', court_lawn.area), ('Other lawns', small.area), ('Clubhouse + pool plot', club.area), ('Services plot', svc.area)]
 pn = fig.add_axes([0.73, 0.05, 0.26, 0.88]); pn.axis('off'); pn.set_xlim(0, 1); pn.set_ylim(0, 1)
 pn.text(0, 1.0, 'JALKOTI COLONY — CONCEPT v5', fontsize=13, weight='bold', va='top', color='#1e3a2b')
@@ -128,8 +128,8 @@ pn.text(0, y - 0.004, 'Colony total', fontsize=7.5, weight='bold'); pn.text(0.70
 y -= 0.045; pn.text(0, y, 'PLOTS', fontsize=9, weight='bold'); y -= 0.023
 ins = [p for p in info if QA.contains(p['poly'].centroid)]; outs = [p for p in info if p not in ins]
 for t in [f'{len(info)} plots · {tot:,.0f} sq ft sellable ({tot / SQFT / NA * 100:.1f}%)',
-          f'All {rect_n} plots are true rectangles (no fans or wedges)',
-          f'Outer row {len(outs)} plots: 45 ft × 75 ft deep', f'Inner row {len(ins)} plots: 45 ft × 90 ft deep',
+          f'{rect_n} true rectangles; {len(info) - rect_n} slightly tapered on gentle bends',
+          f'Outer row {len(outs)} plots: 45 ft wide, {min(p["depth"] for p in outs) * FT:.0f}–{max(p["depth"] for p in outs) * FT:.0f} ft deep', f'Inner row {len(ins)} plots: 45 ft × 90 ft deep',
           f'Smallest {min(p["area"] for p in info):,.0f} · largest {max(p["area"] for p in info):,.0f} sq ft', 'Full dimensions per plot in the schedule (CSV)']:
     pn.text(0, y, t, fontsize=7.5); y -= 0.0195
 y -= 0.02; pn.text(0, y, 'LAYOUT', fontsize=9, weight='bold'); y -= 0.023
@@ -145,6 +145,6 @@ with open(OUT + 'Jalkoti_Colony_v5_Plot_Schedule.csv', 'w', newline='') as f:
     w = csv.writer(f); w.writerow(['Plot', 'Row', 'Front width (ft)', 'Back width (ft)', 'Depth (ft)', 'Front (m)', 'Back (m)', 'Depth (m)', 'Area (sq ft)', 'Area (m2)', 'Shape', 'Corner'])
     for p in info:
         w.writerow([p['no'], 'inner' if p in ins else 'outer', round(p['front'] * FT, 1), round(p['back'] * FT, 1), round(p['depth'] * FT, 1), round(p['front'], 2), round(p['back'], 2), round(p['depth'], 2),
-                    round(p['area']), round(p['area'] / SQFT, 1), 'rectangle' if abs(p['back'] - p['front']) < 1.0 else 'fan (bend)', 'yes' if p['corner'] else ''])
+                    round(p['area']), round(p['area'] / SQFT, 1), 'rectangle' if abs(p['back'] - p['front']) < 0.6 else 'fan (bend)', 'yes' if p['corner'] else ''])
 print('plots', len(info), round(tot), 'sqft', round(tot / SQFT / NA * 100, 1), 'pct | rect', rect_n, '| far9', round(far9), 'far', round(far), '| open', round((park.area + court_lawn.area + small.area) / NA * 100, 1))
 print('min front %.1f ft, min area %.0f, max back/front %.2f' % (min(p['front'] for p in info) * FT, min(p['area'] for p in info), max(p['back'] / p['front'] for p in info)))
