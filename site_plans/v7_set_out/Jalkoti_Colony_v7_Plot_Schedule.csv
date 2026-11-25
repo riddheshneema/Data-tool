@@ -1,0 +1,76 @@
+Plot,Street,Side of street,Faces,Front (ft),Back (ft),Depth (ft),Area (sq ft),Area (m2),Shape,Price group,Premiums,Cautions,Nearest park or garden (m),Drive from gate (m)
+1,Third Street,south side,North,44.2,44.2,75.0,3317,308.1,rectangle,Beside a garden or the stream lawn,beside the stream lawn,,7,94
+2,Third Street,south side,North,44.2,44.2,75.0,3318,308.2,rectangle,"Standard, faces north",,,20,79
+3,Third Street,south side,North,44.2,44.2,75.0,3318,308.2,rectangle,"Standard, faces north",,,25,65
+4,Third Street,south side,North,44.2,44.2,75.0,3318,308.2,rectangle,"Standard, faces north",,,20,50
+5,Third Street,south side,North,44.2,44.2,75.0,3318,308.2,rectangle,On the Central Park,park-facing,,20,35
+6,Third Street,south side,North,44.2,44.2,75.0,3300,306.6,rectangle (rounded kerb corner),On the Central Park,park-facing; corner; on the avenue,,20,6
+7,Third Street,south side,North,46.3,46.3,75.0,3500,325.1,rectangle,"Standard, faces north",next to clubhouse,,81,85
+8,Third Street,south side,North,46.3,46.3,75.0,3472,322.6,rectangle,"Standard, faces north",,,83,100
+9,Third Street,south side,North,46.3,46.3,75.0,3472,322.6,rectangle,"Standard, faces north",,next to services yard,78,115
+10,Third Street,south side,North,46.3,46.3,75.0,3472,322.6,rectangle,"Standard, faces north",,next to services yard,76,130
+11,Third Street,south side,North,46.3,46.3,75.0,3454,320.9,rectangle,"Standard, faces north",,next to services yard,76,145
+12,Third Street,north side,South,41.0,41.0,75.0,3051,283.4,rectangle,Beside a garden or the stream lawn,beside the stream lawn,,6,97
+13,Third Street,north side,South,41.0,41.0,75.0,3076,285.8,rectangle,"Standard, faces south",,,19,83
+14,Third Street,north side,South,41.0,41.0,75.0,3076,285.8,rectangle,"Standard, faces south",,,19,70
+15,Third Street,north side,South,41.0,41.0,75.0,3076,285.7,rectangle,On the Central Park,park-side,,6,56
+16,Third Street,north side,South,42.5,42.5,75.0,3167,294.3,rectangle (rounded kerb corner),Corner plot,corner; on the avenue,,20,32
+17,Third Street,north side,South,40.2,40.2,75.0,3014,280.0,rectangle,"Standard, faces south",,,32,38
+18,Third Street,north side,South,40.2,40.2,75.0,3014,280.0,rectangle,"Standard, faces south",,,44,48
+19,Third Street,north side,South,40.6,48.9,75.0,3320,308.4,"corner plot, one side follows the cross street",Corner plot,corner,,57,61
+20,Third Street,north side,South,41.5,49.7,75.0,3382,314.2,"corner plot, one side follows the cross street",Corner plot,corner,,67,84
+21,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,58,98
+22,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,51,111
+23,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,46,124
+24,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,44,137
+25,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,44,150
+26,Third Street,north side,South,40.3,40.3,75.0,3025,281.0,rectangle,"Standard, faces south",,,44,163
+27,Second Street,south side,North,48.2,48.2,75.0,3604,334.8,rectangle,Beside a garden or the stream lawn,beside the stream lawn,,7,174
+28,Second Street,south side,North,53.5,53.5,75.0,3994,371.0,rectangle (rounded kerb corner),Beside a garden or the stream lawn,corner; beside the stream lawn,,8,136
+29,Second Street,south side,North,46.4,46.4,75.0,3464,321.8,rectangle (rounded kerb corner),Beside a garden or the stream lawn,corner; beside the stream lawn,,7,135
+30,Second Street,south side,North,41.2,41.2,75.0,3088,286.9,rectangle,"Standard, faces north",,,20,143
+31,Second Street,south side,North,41.2,41.2,75.0,3088,286.9,rectangle,"Standard, faces north",,,19,130
+32,Second Street,south side,North,41.2,41.2,75.0,3088,286.9,rectangle,On the Central Park,park-side,,6,115
+33,Second Street,south side,North,46.6,46.6,75.0,3476,323.0,rectangle (rounded kerb corner),Corner plot,corner; on the avenue,,20,57
+34,Second Street,south side,North,41.3,41.3,75.0,3100,288.0,rectangle,"Standard, faces north",,,34,95
+35,Second Street,south side,North,41.3,41.3,75.0,3100,288.0,rectangle,"Standard, faces north",,,46,109
+36,Second Street,south side,North,50.7,42.5,75.0,3433,319.0,"corner plot, one side follows the cross street",Corner plot,corner,,59,97
+37,Second Street,south side,North,51.0,42.7,75.0,3453,320.8,"corner plot, one side follows the cross street",Corner plot,corner,,46,99
+38,Second Street,south side,North,41.6,41.6,75.0,3119,289.8,rectangle,"Standard, faces north",,,43,134
+39,Second Street,south side,North,41.6,41.6,75.0,3119,289.8,rectangle,"Standard, faces north",,,35,148
+40,Second Street,south side,North,41.6,41.6,75.0,3119,289.8,rectangle,"Standard, faces north",,,26,161
+41,Second Street,south side,North,41.6,41.6,75.0,3119,289.8,rectangle,"Standard, faces north",,,21,175
+42,Second Street,south side,North,41.6,41.6,75.0,3119,289.8,rectangle,"Standard, faces north",,,21,188
+43,Second Street,north side,South,42.4,42.4,75.0,3156,293.2,rectangle,"Standard, faces south",,,21,181
+44,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,25,172
+45,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,22,168
+46,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,faces a T-junction (set the gate off-axis),22,166
+47,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,25,152
+48,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,33,138
+49,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,25,124
+50,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,"Standard, faces south",,,20,110
+51,Second Street,north side,South,42.4,42.4,75.0,3182,295.6,rectangle,On the Central Park,park-facing,,20,99
+52,Second Street,north side,South,47.7,47.7,75.0,3558,330.5,rectangle (rounded kerb corner),On the Central Park,park-facing; corner; on the avenue,,20,91
+53,Second Street,north side,South,49.5,49.5,75.0,3692,343.0,rectangle (rounded kerb corner),Corner plot,corner; on the avenue,,31,91
+54,Second Street,north side,South,44.2,44.2,75.0,3315,308.0,rectangle,"Standard, faces south",,,42,99
+55,Second Street,north side,South,44.2,44.2,75.0,3315,308.0,rectangle,"Standard, faces south",,,43,111
+56,Second Street,north side,South,45.3,53.6,75.0,3673,341.2,"corner plot, one side follows the cross street",Corner plot,corner,,43,125
+57,Second Street,north side,South,42.2,50.5,75.0,3440,319.6,"corner plot, one side follows the cross street",Corner plot,corner,,22,130
+58,Second Street,north side,South,41.1,41.1,75.0,3083,286.4,rectangle,Beside a garden or the stream lawn,garden-side,,13,135
+59,Second Street,north side,South,41.1,41.1,75.0,3083,286.4,rectangle,Beside a garden or the stream lawn,garden-side,,11,146
+60,Second Street,north side,South,41.1,41.1,75.0,3083,286.4,rectangle,Beside a garden or the stream lawn,garden-side,,11,159
+61,Second Street,north side,South,41.1,41.1,75.0,3074,285.6,rectangle,Beside a garden or the stream lawn,garden-side,,6,172
+62,Stream Drive,stream side,North,46.9,46.9,75.0,3465,321.9,rectangle,Stream-facing,stream-facing,,47,249
+63,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing,,45,234
+64,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing,,45,218
+65,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing,,49,203
+66,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing,,44,187
+67,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing,,32,172
+68,Stream Drive,stream side,North,46.9,46.9,75.0,3519,326.9,rectangle,Stream-facing,stream-facing; stream garden opposite,,23,156
+69,Stream Drive,stream side,North,52.2,52.2,75.0,3894,361.8,rectangle (rounded kerb corner),Stream-facing,stream-facing; corner; on the avenue; stream garden opposite,,20,116
+70,Stream Drive,stream side,North,51.2,51.2,75.0,3822,355.1,rectangle (rounded kerb corner),Stream-facing,stream-facing; corner; on the avenue; stream garden opposite,,20,117
+71,Stream Drive,stream side,North,46.6,46.6,75.0,3494,324.6,rectangle,Stream-facing,stream-facing; stream garden opposite,,20,156
+72,Stream Drive,stream side,North,46.6,46.6,75.0,3494,324.6,rectangle,Stream-facing,stream-facing; stream garden opposite,,20,172
+73,Stream Drive,stream side,North,55.3,47.1,75.0,3779,351.1,"corner plot, one side follows the cross street",Stream-facing,stream-facing; corner; stream garden opposite,,20,157
+74,Stream Drive,stream side,North,51.3,43.0,75.0,3475,322.8,"corner plot, one side follows the cross street",Stream-facing,stream-facing; corner,,21,156
+75,Stream Drive,stream side,North,46.6,46.6,75.0,3494,324.6,rectangle,Stream-facing,stream-facing; garden-side,,7,194

@@ -68,3 +68,15 @@ This picks up the cloud session's work. Everything is on branch `ccr-feb95d7f-lj
 - **South-facing streamside plots:** discussed entrances from the garden side and 2–3 more 7 ft garden entrances. Not drawn.
 - **Widening S2–S4 to 14 m:** costs about 5,400 sq ft of plots. Not done.
 - **Paver-block roads with a walkway inside the 3 m median:** discussed. Not drawn.
+
+## Colony layout after the engineer's Option 6 (v7 is the current sheet)
+
+- **v6** (`site_plans/v6_engineer/`) put plots on the engineer's road network with a packing routine. The owner rejected it: plots at odd angles, gaps between neighbours, 54 different sizes.
+- **v7** (`site_plans/v7_set_out/`) is set out from the road geometry instead:
+  - two straight plot grids follow the two reaches of the stream (headings 22.94° and 10.40°) and meet on Cross Street;
+  - Stream Drive along the 9 m green, Second and Third Streets parallel to it, a 12 m Avenue from the gate;
+  - every block is two 75 ft plots deep, so side and back walls are shared.
+- **Numbers:** 75 plots, 248,023 sq ft, 51.4% of 11.07 ac (10.79 ac without the clubhouse plot). All plots are 3,014 sq ft or more with a 40 ft or wider street front.
+- **Files:** `Jalkoti_Colony_v7_Layout` (plan), `Jalkoti_Colony_v7_Plot_Guide` (price groups and plot list), `Jalkoti_Colony_v7_Plot_Schedule.csv`.
+- **To rebuild:** in `workspace/v7/` run `plan_v7.py`, `analyze_v7.py`, `render_v7.py`, `sheet2_v7.py` in that order (after `fix_paths.py`).
+- **Owner's standing limits:** colony on about 10 acres, 11 at most; plots 3,000 sq ft and up; roads 9 m or less except the entry avenue; nothing planned on the resort land.
