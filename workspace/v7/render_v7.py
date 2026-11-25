@@ -3,8 +3,9 @@ exec(open('/tmp/claude-0/-home-user-Data-tool/dbda6b63-1fb5-5cd3-90ba-f6a3071a96
 import random, numpy as np
 import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
 from matplotlib.path import Path; from matplotlib.patches import PathPatch, Ellipse, Circle, RegularPolygon
-OUT = '/home/user/Data-tool/site_plans/v7_set_out/'; os.makedirs(OUT, exist_ok=True)
-V = pickle.load(open(SP + 'v7/final.pkl', 'rb'))
+TAG = os.environ.get('TAG', ''); VER = TAG or '7'
+OUT = '/home/user/Data-tool/site_plans/' + ('v7_set_out/' if not TAG else 'v8_more_plots/'); os.makedirs(OUT, exist_ok=True)
+V = pickle.load(open(SP + 'v7/final' + TAG + '.pkl', 'rb'))
 K, roads, park, club, green, STRIP, L, CL, info = V['K'], V['roads'], V['park'], V['club'], V['green'], V['STRIP'], V['L'], V['CL'], V['info']
 W = Fr(V['Wo'], V['Wth']); E = Fr(V['Eo'], V['Eth']); FR = dict(W=W, E=E); GU = V['GU']; VS = V['VS']
 st = pickle.load(open(SP + 'brochure2/stream08.pkl', 'rb'))['stream']
@@ -37,7 +38,7 @@ def draw_plan(ax, labels=True, plot_fill=None, small=False):
         g = p['poly']; col = plot_fill(p) if plot_fill else ('#fdf6e4' if p['front'] == 'lo' else '#f6dcd5')
         ax.fill(*g.exterior.xy, color=col, ec='#9b7b4b', lw=0.55, zorder=4)
         fr = FR[p['grid']]; c = g.centroid; rot = fr.th
-        dim = f"{round(p['front_w'] * FT)}×{round(p['depth'] * FT)}" if 'cross' not in p['shape'] else f"{round(p['area']):,} sf"
+        dim = f"{round(p['front_w'] * FT)}×{round(p['depth'] * FT)}" if ('cross' not in p['shape'] and not p.get('special')) else f"{round(p['area']):,} sf"
         if labels:
             dx, dy = fr.ev[0] * 3.2, fr.ev[1] * 3.2
             ax.text(c.x - dx, c.y - dy, str(p['no']), fontsize=6.4 if not small else 5.4, ha='center', va='center', zorder=7, weight='bold', color='#3d2f1b', rotation=rot)
@@ -45,7 +46,7 @@ def draw_plan(ax, labels=True, plot_fill=None, small=False):
     # landscape
     trees(STRIP, 8.5, 1.9, inset=0.3)
     for z_, ev, r in ((V['gardenN'].difference(STRIP), 9, 2.0), (V['lawnW'].difference(STRIP), 10, 2.1), (V['gardenE'], 9, 1.9), (park, 8.5, 1.9), (V['southE'], 9, 1.7)):
-        trees(z_, ev, r)
+        if not z_.is_empty: trees(z_, ev, r)
     for vv in np.arange(L['A1'][0] + 5, VS - 4, 10.5):          # avenue trees
         if any(abs(vv - mid(k)) < 8 for k in ('s2', 's3')): continue
         for du in (-5.0, 5.0):
@@ -53,13 +54,14 @@ def draw_plan(ax, labels=True, plot_fill=None, small=False):
     # park furniture
     pc = park.centroid; ax.add_patch(Circle((pc.x, pc.y), 7.5, fc='#c5e6ad', ec='#ffffff', lw=0.8, zorder=4)); ax.add_patch(Circle((pc.x, pc.y), 2.2, fc='#e8a33d', ec='none', zorder=5))
     for g_, off in ((V['lawnW'], (0, 0)), (V['gardenE'], (0, 0))):
+        if g_.is_empty: continue
         q = big(g_.difference(STRIP).buffer(-6));
         if not q.is_empty:
             c_ = q.representative_point(); ax.add_patch(RegularPolygon((c_.x, c_.y), 6, radius=3.0, fc='#b5673e', ec='#7a4326', lw=0.5, zorder=6))
     dk = W.xy(GU, 3.0); ax.add_patch(PathPatch(Path([W.xy(GU - 5, 6.5), W.xy(GU + 5, 6.5), W.xy(GU + 5, -2.5), W.xy(GU - 5, -2.5), W.xy(GU - 5, 6.5)], [Path.MOVETO] + [Path.LINETO] * 3 + [Path.CLOSEPOLY]), fc='#c9a26b', ec='#8a6a3b', lw=0.5, zorder=6))
     # clubhouse building + pool
-    cu0 = GU + 6 + 4; b1 = W.rect(cu0, cu0 + 15, L['C1'][0] + 5, L['C1'][0] + 17).intersection(club.buffer(-2)); fp(b1, z=5, fc='#b98d55', ec='#7a5a2e', lw=0.5)
-    pl = W.rect(cu0 + 19, cu0 + 30, L['C1'][0] + 6.5, L['C1'][0] + 13).intersection(club.buffer(-2)); fp(pl, z=5, fc='#7ec8e3', ec='#ffffff', lw=0.6)
+    cu0 = GU + 6 + 3.5; b1 = W.rect(cu0, cu0 + 13, L['C1'][0] + 5.5, L['C1'][0] + 18).intersection(club.buffer(-2)); fp(b1, z=5, fc='#b98d55', ec='#7a5a2e', lw=0.5)
+    pl = W.rect(cu0 + 16.5, cu0 + 25, L['C1'][0] + 5.5, L['C1'][0] + 10.5).intersection(club.buffer(-1.5)); fp(pl, z=5, fc='#7ec8e3', ec='#ffffff', lw=0.6)
     ax.plot(*K.exterior.xy, color='#b3261e', lw=1.9, zorder=8)
     gx, gy = gate; ax.add_patch(PathPatch(Path([W.xy(GU - 7.5, VS - 1.2), W.xy(GU + 7.5, VS - 1.2), W.xy(GU + 7.5, VS + 1.2), W.xy(GU - 7.5, VS + 1.2), W.xy(GU - 7.5, VS - 1.2)], [Path.MOVETO] + [Path.LINETO] * 3 + [Path.CLOSEPOLY]), fc='#3d2f1b', ec='none', zorder=9))
     return fp
@@ -75,13 +77,16 @@ if __name__ == '__main__':
     T(W, GU, 92, 'THE AVENUE   12 m', rot=W.th - 90, **rk); T(W, -23.7, 50, 'WEST LOOP', rot=W.th - 90, **rk)
     cx_ = CL['cross'][0].interpolate(0.36, normalized=True); ax.text(cx_.x, cx_.y, 'CROSS STREET', rotation=-73.3, ha='center', va='center', zorder=9, **rk)
     gk = dict(fontsize=6.3, color='#1e4a22', weight='bold', path_effects=halo)
-    pc = park.centroid; ax.text(pc.x, pc.y - 12.5, f'CENTRAL PARK  {park.area:,.0f} m²', ha='center', va='center', zorder=9, rotation=W.th, **gk)
+    pu, pv = W.uv(park.centroid.x, park.centroid.y); narrow = park.area < 1300
+    gk2 = dict(gk); gk2['fontsize'] = 5.4 if narrow else 6.3
+    T(W, pu, pv + 13.5, (f'CENTRAL PARK\n{park.area:,.0f} m²' if narrow else f'CENTRAL PARK  {park.area:,.0f} m²'), **gk2)
     T(W, 166, -1.5, f"STREAM GARDEN  {V['gardenN'].area:,.0f} m²", **gk)
     T(W, GU - 15.5, 1.5, 'viewing deck', fontsize=4.8, color='#3d2f1b', path_effects=halo)
     lw_ = big(V['lawnW'].difference(STRIP).buffer(-5)).representative_point(); ax.text(lw_.x - 2, lw_.y - 9, f"STREAM LAWN  {V['lawnW'].area:,.0f} m²", ha='center', va='center', zorder=9, **gk)
-    ge = big(V['gardenE'].buffer(-5)).representative_point(); ax.text(ge.x + 4, ge.y - 7.5, f"NE GARDEN\n{V['gardenE'].area:,.0f} m²", ha='center', va='center', zorder=9, **gk)
+    if not V['gardenE'].is_empty:
+        ge = big(V['gardenE'].buffer(-5)).representative_point(); ax.text(ge.x + 4, ge.y - 7.5, f"NE GARDEN\n{V['gardenE'].area:,.0f} m²", ha='center', va='center', zorder=9, **gk)
     sv = V['svc'].representative_point(); ax.text(sv.x - 4, sv.y, 'SERVICES', fontsize=5.0, ha='center', va='center', zorder=9, color='#3d2f1b', rotation=E.th - 14, path_effects=halo)
-    T(W, GU + 6 + 27, L['C1'][0] + 3.2, f'CLUBHOUSE  {club.area:,.0f} m²', fontsize=5.6, color='#6a4a20', weight='bold')
+    T(W, GU + 6 + 22, L['C1'][0] + 2.6, f'CLUBHOUSE  {club.area:,.0f} m²', fontsize=5.4, color='#6a4a20', weight='bold')
     gx, gy = W.xy(GU, VS); ax.text(gx + 12, gy - 5, 'GATE', fontsize=8, weight='bold', zorder=9, color='#3d2f1b')
     ax.annotate('', xy=(331, -266), xytext=(gx + 3.2, gy - 7), arrowprops=dict(arrowstyle='<|-', color='#3d2f1b', lw=1.0), zorder=9)
     ax.text(347, -252, 'approach from the resort\ngate and main road', fontsize=5.6, color='#5a4a32', zorder=9, va='center')
@@ -94,5 +99,5 @@ if __name__ == '__main__':
     ax.set_xlim(108, 474); ax.set_ylim(-275, -40); ax.set_aspect('equal'); ax.axis('off')
     exec(open(SP + 'v7/panel_v7.py').read())
     exec(open(SP + 'v7/band_v7.py').read())
-    fig.savefig(OUT + 'Jalkoti_Colony_v7_Layout.pdf'); fig.savefig(OUT + 'Jalkoti_Colony_v7_Layout.png', dpi=170)
+    fig.savefig(OUT + f'Jalkoti_Colony_v{VER}_Layout.pdf'); fig.savefig(OUT + f'Jalkoti_Colony_v{VER}_Layout.png', dpi=170)
     print('sheet 1 saved')

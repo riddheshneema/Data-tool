@@ -80,3 +80,14 @@ This picks up the cloud session's work. Everything is on branch `ccr-feb95d7f-lj
 - **Files:** `Jalkoti_Colony_v7_Layout` (plan), `Jalkoti_Colony_v7_Plot_Guide` (price groups and plot list), `Jalkoti_Colony_v7_Plot_Schedule.csv`.
 - **To rebuild:** in `workspace/v7/` run `plan_v7.py`, `analyze_v7.py`, `render_v7.py`, `sheet2_v7.py` in that order (after `fix_paths.py`).
 - **Owner's standing limits:** colony on about 10 acres, 11 at most; plots 3,000 sq ft and up; roads 9 m or less except the entry avenue; nothing planned on the resort land.
+
+### v8 (current): v7 plus three changes the owner asked for
+
+- `site_plans/v8_more_plots/`: 77 plots, 262,115 sq ft, 54.4% of 11.07 ac. Roads unchanged (9 m streets, 12 m Avenue).
+- **Central Park** narrowed from 34 m to 24 m (1,089 m²); adds plot 77 and widens plots 12-15.
+- **Plot 76** cut from the east end of the clubhouse land beside plot 7 (3,145 sq ft, irregular, faces the foot of Cross Street).
+- **North-east garden removed:** plot 75 widened to 90 ft, plots 60 and 61 extended back to the boundary.
+- Parks and gardens are now 10.1% in three places, so there is no room to shrink them further.
+- Old plot numbers are kept; new plots are 76 and 77.
+- **To rebuild v8:** `plan_v7.py '{"v8":1,"pw":24.0,"out":"plan8"}'`, then `TAG=8` for `analyze_v7.py`, `render_v7.py`, `sheet2_v7.py`.
+- **Not done, offered:** extending plots 42 and 26 into the green wedge at the east end would add about 8,500 sq ft (to about 56%).

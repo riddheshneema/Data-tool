@@ -24,10 +24,11 @@ def code(p):
     if 'on the avenue' in t: c += 'A'
     if any('T-junction' in x for x in p['cautions']): c += ' T!'
     if any('services' in x for x in p['cautions']): c += ' Y!'
+    if p.get('special'): c = 'L' + c
     return c.strip()
 fig = plt.figure(figsize=(16.54, 11.69))
 fig.text(0.012, 0.972, 'JALKOTI COLONY — PLOT GUIDE', fontsize=15, weight='bold', color='#1e3a2b', va='top')
-fig.text(0.012, 0.945, 'Layout v7: what each of the 75 plots is, for pricing and for showing buyers', fontsize=8.6, color='#555', va='top')
+fig.text(0.012, 0.945, f'Layout v{rv.VER}: what each of the {len(info)} plots is, for pricing and for showing buyers', fontsize=8.6, color='#555', va='top')
 ax = fig.add_axes([0.008, 0.33, 0.60, 0.60]); draw_plan(ax, plot_fill=lambda p: TC[p['tier']], small=True)
 for p in info:
     c = p['poly'].centroid; fr = FR[p['grid']]
@@ -50,17 +51,17 @@ lg.plot(0.011, y, marker='^', ms=5, color='#c62828'); lg.text(0.032, y, 'looks s
 lg.plot(0.011, y, marker='s', ms=4.5, color='#555'); lg.text(0.032, y, 'backs onto the services yard: keep a planted screen; final yard position after the levels survey', fontsize=6.6, va='center')
 lg.text(0.62, 0.96, "KEPT FROM THE ENGINEER'S OPTION 6", fontsize=8.8, weight='bold', color='#1e3a2b', va='top'); lg.plot([0.62, 1.0], [0.885, 0.885], color='#1e3a2b', lw=0.6)
 yy = 0.83
-for t_ in ['Road along the stream with a green edge', 'Plots in double rows between parallel roads', 'Lawn at the stream bend, garden in the north-east',
+for t_ in ['Road along the stream with a green edge', 'Plots in double rows between parallel roads', 'Lawn at the stream bend' + (', garden in the north-east' if not V['gardenE'].is_empty else ', garden on the stream at the Avenue'),
            'Central green with the clubhouse near the entry', '12 m road from the gate into the heart']:
     lg.text(0.62, yy, '•  ' + t_, fontsize=6.9, va='center'); yy -= 0.066
 yy -= 0.03
 lg.text(0.62, yy, 'CHANGED', fontsize=8.8, weight='bold', color='#1e3a2b', va='center'); lg.plot([0.62, 1.0], [yy - 0.045, yy - 0.045], color='#1e3a2b', lw=0.6); yy -= 0.11
-for t_ in ['Hotel, shops and parking removed', 'Rows made straight, so plots are rectangles', 'Plots 3,000 sq ft and up (his: 2,000–2,520)', 'One road fewer through the middle; parks and gardens 13% of the land']:
+for t_ in ['Hotel, shops and parking removed', 'Rows made straight, so plots are rectangles', 'Plots 3,000 sq ft and up (his: 2,000–2,520)', f"One road fewer through the middle; parks and gardens {(park.area + V['gardenN'].area + V['lawnW'].area + V['gardenE'].area) / NA * 100:.0f}% of the land"]:
     lg.text(0.62, yy, '•  ' + t_, fontsize=6.9, va='center'); yy -= 0.066
 # plot list
 tb = fig.add_axes([0.625, 0.02, 0.37, 0.955]); tb.axis('off'); tb.set_xlim(0, 3); tb.set_ylim(0, 1)
 tb.text(0, 0.985, 'PLOT LIST', fontsize=8.8, weight='bold', color='#1e3a2b', va='top'); tb.plot([0, 2.97], [0.958, 0.958], color='#1e3a2b', lw=0.6)
-per = 25; rh = 0.0318
+per = 25 if len(info) <= 75 else 26; rh = 0.0318 if len(info) <= 75 else 0.0306
 for ci in range(3):
     x0 = ci + 0.0
     for lbl, dx, ha in (('No', 0.10, 'right'), ('Front×depth', 0.14, 'left'), ('Sq ft', 0.60, 'right'), ('Faces', 0.64, 'left'), ('Notes', 0.78, 'left')):
@@ -69,19 +70,20 @@ for ci in range(3):
         yv = 0.94 - (ri + 1) * rh
         tb.add_patch(plt.Rectangle((x0 + 0.005, yv - rh * 0.36), 0.035, rh * 0.72, fc=TC[p['tier']], ec='#9b7b4b', lw=0.3))
         dim = f"{round(p['front_w'] * FT)}×{round(p['depth'] * FT)}" if 'cross' not in p['shape'] else f"{round(p['front_w'] * FT)}/{round(p['back_w'] * FT)}×{round(p['depth'] * FT)}"
+        if p.get('special'): dim = f"{round(p['wide'] * FT)}×{round(p['dmin'] * FT)}–{round(p['dmax'] * FT)}" if p['dmax'] - p['dmin'] > 1 else f"{round(p['wide'] * FT)}×{round(p['dmax'] * FT)}"
         tb.text(x0 + 0.10, yv, str(p['no']), fontsize=6.2, ha='right', va='center', weight='bold'); tb.text(x0 + 0.14, yv, dim, fontsize=6.0, va='center')
         tb.text(x0 + 0.60, yv, f"{p['area']:,.0f}", fontsize=6.0, ha='right', va='center'); tb.text(x0 + 0.64, yv, 'N' if p['front'] == 'lo' else 'S', fontsize=6.0, va='center')
         tb.text(x0 + 0.78, yv, code(p), fontsize=5.8, va='center', color='#333')
-tb.text(0, 0.94 - 26.3 * rh, 'Notes:  S stream-facing · P on the Central Park · G beside a garden or the stream lawn · C corner · A on the Avenue', fontsize=5.9, va='center', color='#333')
-tb.text(0, 0.94 - 27.1 * rh, 'T! looks down a T-junction · Y! backs onto the services yard.   Corner plots on Cross Street show front/back width.', fontsize=5.9, va='center', color='#333')
-tb.text(0, 0.94 - 27.9 * rh, 'Plots 1–11 Third Street south side · 12–26 Third Street north side · 27–42 Second Street south side', fontsize=5.9, va='center', color='#333')
-tb.text(0, 0.94 - 28.7 * rh, '43–61 Second Street north side · 62–75 Stream Drive.', fontsize=5.9, va='center', color='#333')
-fig.savefig(OUT + 'Jalkoti_Colony_v7_Plot_Guide.pdf'); fig.savefig(OUT + 'Jalkoti_Colony_v7_Plot_Guide.png', dpi=170)
-with open(OUT + 'Jalkoti_Colony_v7_Plot_Schedule.csv', 'w', newline='') as f:
+tb.text(0, 0.94 - (per + 1.3) * rh, 'Notes:  S stream-facing · P on the Central Park · G beside a garden or the stream lawn · C corner · A on the Avenue', fontsize=5.9, va='center', color='#333')
+tb.text(0, 0.94 - (per + 2.1) * rh, 'T! looks down a T-junction · Y! backs onto the services yard · L larger plot with an irregular back (width × depth range).', fontsize=5.9, va='center', color='#333')
+tb.text(0, 0.94 - (per + 2.9) * rh, 'Plots 1–11 Third Street south side · 12–26 Third Street north side · 27–42 Second Street south side', fontsize=5.9, va='center', color='#333')
+tb.text(0, 0.94 - (per + 3.7) * rh, '43–61 Second Street north side · 62–75 Stream Drive.' + ('' if len(info) <= 75 else '   New: 76 beside the clubhouse (Third Street) · 77 Second Street, park side.'), fontsize=5.9, va='center', color='#333')
+fig.savefig(OUT + f'Jalkoti_Colony_v{rv.VER}_Plot_Guide.pdf'); fig.savefig(OUT + f'Jalkoti_Colony_v{rv.VER}_Plot_Guide.png', dpi=170)
+with open(OUT + f'Jalkoti_Colony_v{rv.VER}_Plot_Schedule.csv', 'w', newline='') as f:
     w = csv.writer(f)
     w.writerow(['Plot', 'Street', 'Side of street', 'Faces', 'Front (ft)', 'Back (ft)', 'Depth (ft)', 'Area (sq ft)', 'Area (m2)', 'Shape', 'Price group', 'Premiums', 'Cautions', 'Nearest park or garden (m)', 'Drive from gate (m)'])
     for p in info:
         side = 'stream side' if p['row'] == 'A1' else ('north side' if p['row'] in ('A2', 'B2') else 'south side')
-        w.writerow([p['no'], p['street'], side, 'North' if p['front'] == 'lo' else 'South', round(p['front_w'] * FT, 1), round(p['back_w'] * FT, 1), round(p['depth'] * FT, 1), round(p['area']), round(p['area'] / SQFT, 1),
+        w.writerow([p['no'], p['street'], side, 'North' if p['front'] == 'lo' else 'South', round(p['front_w'] * FT, 1), round(p['back_w'] * FT, 1) if not p.get('special') else '', (round(p['depth'] * FT, 1) if not p.get('special') else f"{round(p['dmin'] * FT)}-{round(p['dmax'] * FT)}"), round(p['area']), round(p['area'] / SQFT, 1),
                     p['shape'], TN[p['tier']], '; '.join(p['tags']), '; '.join(c for c in p['cautions'] if c != 'south-facing'), round(p['park_m']), round(p['gate_m'])])
 print('sheet 2 + schedule saved;', {TN[k]: sum(1 for p in info if p['tier'] == k) for k in TN})

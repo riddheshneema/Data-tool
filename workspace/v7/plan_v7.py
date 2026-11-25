@@ -153,6 +153,23 @@ def cut_row(name, fr, hpz, side, front, Wt):
 for name, front, Wt in ROWS:
     cut_row(name, W, HPW, 'W', front, Wt)
     cut_row(name, E, HPE, 'E', front, P.get('wE_' + name, Wt))
+if P.get('v8'):
+    # (a) one more plot beside old plot 7, taken from the east end of the clubhouse land
+    c1e = sorted([p for p in plots if p['row'] == 'C1' and p['frame'] is E], key=lambda p: p['u'][0])
+    c1e = sorted(c1e, key=lambda p: p['poly'].centroid.x); u7 = min(E.uv(x, y)[0] for x, y in c1e[0]['poly'].exterior.coords); uw = P.get('new_uw', 72.0)
+    npoly = big(E.rect(uw, u7, L['s3'][0] + 1.0, 220).intersection(BUILD).difference(roads)).simplify(0.05).intersection(BUILD.buffer(-0.02))
+    club = big(club.difference(npoly.buffer(0.02)))
+    plots.append(dict(poly=npoly, row='C1', side='E', frame=E, front='lo', w=npoly.boundary.intersection(RB_.buffer(0.2)).length - 1.0, d=L['C1'][1] - L['C1'][0], v=L['C1'], u=(uw, u7),
+                      corner=False, mitre=False, special='beside the clubhouse: front follows the bend of Third Street, back follows the boundary', isnew=True))
+    # (b) the north-east garden goes into the plots around it
+    a1e = sorted([p for p in plots if p['row'] == 'A1' and p['frame'] is E], key=lambda p: p['u'][0])
+    a2e = sorted([p for p in plots if p['row'] == 'A2' and p['frame'] is E], key=lambda p: p['u'][0])
+    last, p60, p61 = a1e[-1], a2e[-2], a2e[-1]
+    ext = big(E.rect(last['u'][0], p60['u'][0], L['A1'][0], L['A1'][1]).intersection(BUILD).difference(roads)).simplify(0.05).intersection(BUILD.buffer(-0.02))
+    last['poly'] = ext; last['special'] = 'double-width plot at the end of Stream Drive; north-east corner cut by the boundary'
+    for p_, txt in ((p60, 'extended back to the boundary: slanted back wall'), (p61, 'small extension at the back corner')):
+        g_ = big(E.rect(p_['u'][0], p_['u'][1], -40, L['A2'][1]).intersection(BUILD).difference(roads).difference(ext.buffer(0.02))).simplify(0.05).intersection(BUILD.buffer(-0.02))
+        p_['poly'] = g_; p_['special'] = txt
 used = unary_union([p['poly'] for p in plots] + [roads, park, club])
 green = K.difference(used)
 res = dict(K=K, C=C, roads=roads, plots=plots, park=park, club=club, green=green, STRIP=STRIP, L=L, CL=CL, VS=VS, X0=X0, bis=bis, GU=GU, P=P,
