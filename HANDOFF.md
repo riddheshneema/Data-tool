@@ -93,3 +93,10 @@ This picks up the cloud session's work. Everything is on branch `ccr-feb95d7f-lj
 - **Not done, offered:** extending plots 42 and 26 into the green wedge at the east end would add about 8,500 sq ft (to about 56%).
 - **Landscape sheet:** `site_plans/v8_more_plots/Jalkoti_Colony_v8_Landscape` (concept). Built by `workspace/v7/landscape_v8.py` after the v8 steps above. It uses only green land and road verges; plots and roads are unchanged.
 - **Road widths:** owner asked whether 9 m streets should be 12 m. Advice given: keep 9 m (12 m everywhere costs roughly 5% of the land); the Avenue is already 12 m. No decision yet.
+
+### Final drawing set (layout v8)
+
+- `site_plans/final/Jalkoti_Colony_Final_Drawing_Set.pdf`: 6 sheets (master plan with landscape, key dimensions, three enlarged sheets with every plot's side lengths in feet, plot schedule). PNG copies of each sheet sit beside it.
+- `Jalkoti_Colony_Final_Layout.dxf`: CAD file in metres with layers for boundary, plots, roads, road centre lines, park, clubhouse, 9 m strip, plot numbers, areas and side lengths.
+- `Jalkoti_Colony_Final_Plot_Schedule.csv`: all 77 plots.
+- Built by `workspace/v7/final_set.py` after the v8 and landscape steps.
