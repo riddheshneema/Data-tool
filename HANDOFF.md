@@ -91,3 +91,5 @@ This picks up the cloud session's work. Everything is on branch `ccr-feb95d7f-lj
 - Old plot numbers are kept; new plots are 76 and 77.
 - **To rebuild v8:** `plan_v7.py '{"v8":1,"pw":24.0,"out":"plan8"}'`, then `TAG=8` for `analyze_v7.py`, `render_v7.py`, `sheet2_v7.py`.
 - **Not done, offered:** extending plots 42 and 26 into the green wedge at the east end would add about 8,500 sq ft (to about 56%).
+- **Landscape sheet:** `site_plans/v8_more_plots/Jalkoti_Colony_v8_Landscape` (concept). Built by `workspace/v7/landscape_v8.py` after the v8 steps above. It uses only green land and road verges; plots and roads are unchanged.
+- **Road widths:** owner asked whether 9 m streets should be 12 m. Advice given: keep 9 m (12 m everywhere costs roughly 5% of the land); the Avenue is already 12 m. No decision yet.
