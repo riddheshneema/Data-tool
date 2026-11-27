@@ -1,0 +1,70 @@
+Plot,Street,Faces,Front (ft),Depth (ft),Area (sq ft),Area (m2),Shape,Notes,Drive from gate (m)
+1,Stream Drive,North,43.9,61-75,3872,359.7,"straight front, irregular back or side",end plot: one side follows the boundary; stream-facing,229
+2,Stream Drive,North,43.9,75.0,3289,305.6,rectangle,stream-facing,215
+3,Stream Drive,North,49.1,75.0,3666,340.5,rectangle,corner; stream-facing,198
+4,Stream Drive,North,49.3,75.0,3682,342.0,rectangle,corner; stream-facing,170
+5,Stream Drive,North,44.1,75.0,3305,307.1,rectangle,stream-facing,155
+6,Stream Drive,North,49.3,75.0,3682,342.1,rectangle,corner; stream-facing,117
+7,Stream Drive,North,49.3,75.0,3682,342.0,rectangle,corner; stream-facing,117
+8,Stream Drive,North,44.1,75.0,3305,307.1,rectangle,stream-facing,156
+9,Stream Drive,North,49.3,75.0,3682,342.1,rectangle,corner; stream-facing,171
+10,Stream Drive,North,59.7,21-75,4710,437.6,"straight front, irregular back or side",end plot: one side follows the boundary; corner; stream-facing,199
+11,Stream Drive,North,72.2,10-75,6044,561.5,"straight front, irregular back or side",end plot: one side follows the boundary; stream-facing,223
+12,West Street,East,51.3,83-86,4325,401.8,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,269
+13,West Street,East,51.3,71-83,4017,373.2,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,285
+14,West Street,West,52.8,75.0,3962,368.0,rectangle,,268
+15,West Street,West,52.8,75.0,3962,368.0,rectangle,,285
+16,West Street,West,52.8,72-75,3941,366.1,"straight front, irregular back or side",irregular; garden behind,303
+17,First Street,East,44.3,75.0,3325,308.9,rectangle,,211
+18,First Street,East,44.3,75.0,3325,308.9,rectangle,,224
+19,First Street,East,44.3,75.0,3325,308.9,rectangle,on the Central Park,239
+20,First Street,East,44.3,75.0,3325,308.9,rectangle,on the Central Park; garden behind,253
+21,First Street,East,44.3,75.0,3325,308.9,rectangle,on the Central Park; garden behind,268
+22,First Street,East,44.3,75.0,3325,308.9,rectangle,on the Central Park; garden behind,283
+23,First Street,East,44.3,72-75,3307,307.2,"straight front, irregular back or side",irregular; garden behind,297
+24,First Street,West,47.1,75.0,3535,328.4,rectangle,,210
+25,First Street,West,47.1,75.0,3535,328.4,rectangle,,226
+26,First Street,West,47.1,75.0,3535,328.4,rectangle,on the Central Park,241
+27,First Street,West,49.2,75.0,3691,342.9,rectangle,on the Central Park,282
+28,First Street,West,49.2,71-75,3670,340.9,"straight front, irregular back or side",irregular,298
+29,The Avenue,East,47.1,75.0,3535,328.4,rectangle,,100
+30,The Avenue,East,47.1,75.0,3535,328.4,rectangle,,85
+31,The Avenue,East,47.1,75.0,3535,328.4,rectangle,on the Central Park,69
+32,The Avenue,East,46.2,75.0,3461,321.6,rectangle,on the Central Park,28
+33,The Avenue,East,46.2,75.0,3461,321.6,rectangle,,14
+34,The Avenue,East,46.2,75.0,3461,321.6,rectangle,,5
+35,The Avenue,West,47.4,75.0,3552,329.9,rectangle,,100
+36,The Avenue,West,47.4,75.0,3552,329.9,rectangle,,85
+37,The Avenue,West,47.4,75.0,3552,329.9,rectangle,,69
+38,The Avenue,West,47.4,75.0,3552,329.9,rectangle,,53
+39,The Avenue,West,47.4,75.0,3552,329.9,rectangle,,38
+40,The Avenue,West,47.4,75.0,3544,329.3,rectangle,next to clubhouse,22
+41,Second Street,East,47.3,75.0,3547,329.6,rectangle,,211
+42,Second Street,East,47.3,75.0,3547,329.6,rectangle,,226
+43,Second Street,East,47.3,75.0,3547,329.6,rectangle,,242
+44,Second Street,East,47.3,75.0,3547,329.6,rectangle,,258
+45,Second Street,East,47.3,75.0,3547,329.6,rectangle,,273
+46,Second Street,East,47.3,75.0,3547,329.6,rectangle,next to clubhouse,289
+47,Second Street,West,42.1,73-75,3267,303.5,"straight front, irregular back or side",end plot: one side follows the boundary,212
+48,Second Street,West,42.1,75.0,3160,293.6,rectangle,,225
+49,Second Street,West,42.1,75.0,3160,293.6,rectangle,,239
+50,Second Street,West,42.1,75.0,3160,293.6,rectangle,,253
+51,Second Street,West,42.1,75.0,3160,293.6,rectangle,,267
+52,Second Street,West,42.1,75.0,3160,293.6,rectangle,,281
+53,Second Street,West,42.1,71-75,3139,291.6,"straight front, irregular back or side",irregular,295
+54,Third Street,East,45.6,10-75,3948,366.8,"straight front, irregular back or side",end plot: one side follows the boundary,271
+55,Third Street,East,45.6,75.0,3417,317.5,rectangle,,286
+56,Third Street,East,45.6,75.0,3417,317.5,rectangle,,301
+57,Third Street,East,45.6,75.0,3417,317.5,rectangle,,316
+58,Third Street,East,45.6,75.0,3417,317.5,rectangle,,331
+59,Third Street,East,45.6,75.0,3417,317.5,rectangle,,346
+60,Third Street,East,45.6,75.0,3417,317.5,rectangle,next to services yard,361
+61,Third Street,East,45.6,2-75,4493,417.4,"straight front, irregular back or side",end plot: one side follows the boundary; next to services yard,376
+62,Third Street,West,43.2,10-75,3773,350.5,"straight front, irregular back or side",end plot: one side follows the boundary; garden behind,274
+63,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,293
+64,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,307
+65,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,321
+66,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,335
+67,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,349
+68,Third Street,West,43.2,120-120,5181,481.3,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,364
+69,Third Street,West,43.2,117-120,5161,479.5,"straight front, irregular back or side",deeper plot: back follows the boundary; garden behind,378

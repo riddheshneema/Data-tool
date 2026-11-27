@@ -1,0 +1,142 @@
+# T&CP compliance test: Jalkoti colony layout
+
+This tests the layout `site_plans/Plan_4000_Max_RiverDrive12m`: 62 plots, all roads 12 m, with S1 joined to S2 by the new S5 link road. Test date: 12 Nov 2026.
+
+The site is land outside a planning area that has already been diverted. The governing rules are the MP Gram Panchayat (Development of Colonies) Rules 2014. The layout is tested against MP Bhumi Vikas Niyam (BVN) 2012, consolidated to 6 March 2025.
+
+Annotated test sheet: `site_plans/Plan_4000_Max_RiverDrive12m_TCP_Test.png` (and `.pdf`). Close-up of the changed plots: `site_plans/Plan_4000_Max_RiverDrive12m_Detail_SE_and_V42.png`.
+
+## Bottom line
+
+The layout passes every BVN layout rule that can be measured:
+- road width and length;
+- plot size and frontage;
+- setbacks;
+- the distance from the stream;
+- junction angles;
+- turning spaces at dead ends;
+- the 10% open-space quantity.
+
+Two items can't be settled by measuring:
+
+1. **The riverside garden.** It gives 12.9% open space, and 10% is needed. But it is about 35 times longer than it is wide. Rule 47(3) says open space should "generally" be no more than 2.5 times as long as it is wide. The same rule lets T&CP accept "common open spaces of different shapes" that serve the community next to them. So it counts only if T&CP agrees.
+2. **The 15 m access road through the resort must become a public street before you apply.** Rule 38(6) measures road length from the farthest plot to the public street.
+   - If the access road is public, the farthest plot (V43) is 360 m away. The limit for 12 m roads is 400 m.
+   - If it stays private, the distance runs to the main entry, about 585 m. The main route would then have to be 18 m wide.
+
+S1 used to end in a dead end that bent twice, which Rule 43 does not allow. A new 12 m link road (S5) now joins S1 to S2, so that issue is gone.
+
+The test also found six real defects in the drawing. All six are fixed (see "What the test found and fixed").
+
+## Which rules apply to this land
+
+- **Colony permission.** The 2014 Gram Panchayat colony rules apply. The competent authority is the SDO (Revenue), Maheshwar.
+  - Rule 10(2), outside a planning area: the SDO "shall seek the opinion of the Competent Authority of concerned Town and Country Planning authority. Only after receipt of affirmative opinion the diversion order… shall be issued."
+  - So T&CP gives an **opinion**, not a permission under ss.29–30 of the 1973 Act. The High Court has called this an administrative step.
+- **BVN 2012.** BVN applies directly only in planning areas, and in non-planning areas brought under it by notification (Rule 2(5)(a)). No such notification was found for Khargone.
+  - T&CP still judges layouts against BVN.
+  - Building permissions on the plots will use BVN later.
+  - So the layout was tested against BVN in full.
+- **The new integrated colony rules are still not notified.** Reports from October 2026 describe them as still being drafted. The High Court applied the 2014 rules on 3 Nov 2026.
+- **Land already diverted.** Under MP Land Revenue Code s.59, a diversion is for a stated purpose, shown on the diversion sketch.
+  - If the order shows another use (for example commercial, for the resort), file a fresh intimation (Form-I) with a sketch for the residential colony part.
+  - The premium in gram panchayat areas is nil from commercial to dwelling, and Rs 1.50/m² from dwelling to commercial (2020 schedule).
+  - A diversion does not grant colony permission (s.59(10)).
+
+## Test results
+
+Rule numbers are BVN 2012 unless stated otherwise.
+
+| # | Rule | Requirement | This layout | Result |
+|---|---|---|---|---|
+| 1 | 38(4)(a) | Every plot on a public street at least 7.5 m wide | Every plot fronts a 12 m road. Network is fully connected to the gate. | Pass |
+| 2 | 53 | Detached plot above 225 m², frontage above 12 m | Smallest plot 336 m² (V34, 3,616 sq ft). Shortest front side 13.2 m (R13, 43.2 ft); the four plots on S5 have at least 45 ft (13.7 m). Measured side by side on the dimension sheets. | Pass |
+| 3 | 38 Table 3 + 38(6) | 12 m road allowed up to 400 m, measured from the farthest plot to the public street | All roads 12 m. Farthest plot V43 is 360 m from the colony gate. Rule 38(6) measures from the farthest plot to the public street, so every 12 m road is within the limit. | Pass, if the access road is public |
+| 4 | 43 | Cul-de-sacs only on straight roads; turning space at least 121 m² with no side under 11 m | Two dead ends, both straight: the S2 stub serving V38 (42 m) and the RD south end (66 m). A 12 × 11 m (132 m²) turning space fits inside the road at each. No median runs into them. | Pass |
+| 5 | 43 | Same rule | S1 is joined to S2 by the 12 m S5 link road, so it is no longer a dead end | Pass |
+| 6 | 45 | Roads meet at right angles where possible; avoid junctions under 30° | All junctions 68°–94° | Pass |
+| 7 | 46 + 56 | Front 3.6 m on a 12 m street; rear 3 m (plots over 225 m²); sides 3 m both sides (detached) | Every plot keeps a buildable footprint of at least 114 m² (V37) and at least 7.7 m wide | Pass |
+| 8 | 47(2) | Open space at least 10% of the layout | Riverside garden 6,156 m² = 12.9%. No other park. | Pass on quantity |
+| 9 | 47(3) | Length "generally" no more than 2.5 × average width; other shapes at T&CP's discretion | Garden is about 462 m long and averages 13.3 m wide (about 35:1) | T&CP's call |
+| 10 | 47(5) | Independent access to each open space; building line 3 m from it | 7 ft (2.1 m) walkway, 31 m long, from RD between R10 and R11. For comparison, Rule 38(5) asks 1.5 m for a pathway up to 30 m. River plots keep 3 m rear setbacks. | Pass (a wider or second walkway would make it safer) |
+| 11 | 50(b) | No building site within 9 m of the highest water level of a stream, or 15 m of a river | Every plot is 15.0 m from the drawn stream edge; buildings at least 18 m | Pass (survey the high-water line) |
+| 12 | 49, Table 6 | Facilities by population (indicative) | About 62 plots, roughly 310 residents. Below every threshold. | Pass |
+| 13 | 61 | FAR 1.25 | Up to 1.25 × plot area (e.g. 5,000 sq ft on a 4,000 sq ft plot) | Info |
+| 14 | 2014 rules | Colony services handed to the Gram Panchayat | Services plot (STP, tank + tubewell, waste), 549 m², now inside the colony | Pass |
+| 15 | 2(72) | A street is one "over which the public have a right of passage" | The access road through the resort is private until dedicated | Action |
+| 16 | 2014 rules | EWS/LIG 6% of saleable area. Over 2 ha it may be within 2 km, or a shelter fee. | Plan uses the shelter fee. 6% = 1,814 m² (19,523 sq ft, about 5 plots). | Confirm |
+| 17 | 2014 rules | 25% of plots mortgaged with the Collector | 16 of 62 plots | Info |
+| 18 | Narmada orders | No construction within 300 m of the Narmada's high-flood level | The stream is not the Narmada | Confirm |
+| 19 | RERA | Register before advertising or booking | — | Action |
+
+## What the test found and fixed
+
+1. **S1 narrowed to nothing beside V31.** V31's "frontage" faced a strip of road only 0–9 m wide, and S1 was only about 10 m wide beside V7 and V18.
+   - S1 is now a full 12 m right to its end.
+   - V31 was trimmed. V7 lost 480 sq ft, V18 lost 100 sq ft and V5 lost 77 sq ft.
+2. **The services plot was on resort land.** It is now inside the colony boundary, so it passes to the Gram Panchayat with the roads. The colony grows from 11.66 to 11.80 acres.
+3. **The access road narrowed to 11 m for about 50 m.** It is widened into the resort side to a true 15 m.
+4. **S1 is joined to S2.** A new 12 m link road (S5) runs along the south edge of V16 and V18. S1 is no longer a bent dead end, and S1 → S5 → S2 forms a loop.
+   - The land south of S5 is re-cut into four plots facing it: V29, V30, V31 and V43.
+5. **S2's garden median ran into its turning space.** It now stops 4 m short of the S5 junction, and the S2 stub and its turning space are paved.
+
+## Your changes in this round
+
+- **V42.** The triangle next to V19/V20 is now a 4,911 sq ft plot with 50.9 m of road frontage. Its sharp 49° tip is cut off with a corner splay.
+  - That triangle was the colony's only compact park, 1% of the area. The open space now rests entirely on the riverside garden.
+  - Keeping the park would not have changed the outcome, because 1% is far below 10%.
+- **SE block, now facing the S5 link road:**
+  - V29: 3,835 sq ft, a corner plot (84.2 ft on S2, 42.7 ft on S5).
+  - V30: 4,592 sq ft (45.2 ft on S5).
+  - V31: 5,133 sq ft (45.2 ft on S5).
+  - V43: 4,340 sq ft, new (63.3 ft on S5).
+  - This replaces the earlier V29/V30/V31 split, which needed S1 as a dead end.
+
+## Result
+
+| Use | m² | sq ft | % |
+|---|---|---|---|
+| Plots (19 river-front + 43 villas) | 30,229 | 325,382 | 63.3 |
+| Roads (carriageway and verges) | 10,131 | 109,048 | 21.2 |
+| Garden medians (road land) | 634 | 6,821 | 1.3 |
+| Riverside garden (open space) | 6,156 | 66,261 | 12.9 |
+| Services plot | 549 | 5,906 | 1.1 |
+| Landscaped corners | 429 | 4,615 | 0.9 |
+| Walkway | 66 | 712 | 0.1 |
+| **Colony total** | **47,747** | **513,947** | **100** (11.80 acres) |
+
+## If T&CP objects
+
+- **Riverside garden not accepted as open space.** About 4,775 m² (10%) of compact parks would be needed. That is about 11 plots, and sellable area would fall to roughly 54%. Raise it first at the pre-application meeting.
+- **More access to the garden wanted.** Add a second 7 ft walkway on the north run, between R3 and R4. It costs about 690 sq ft.
+
+## Paperwork before you apply
+
+1. **Dedicate the 15 m access road as a public street.** Use a gift deed to the Gram Panchayat or record it as a public road.
+   - Do the same for the 15 m approach road. It runs about 550 m from the Jalkoti–Maheshwar road, over the bridge, to the main entry. Per the survey section it is 2 + 1 + 9 m carriageway + 1 + 2 m.
+   - One unverified source says the 2014 rules want a 7 m carriageway plus 1.8 m shoulders for colonies over 2 ha. That would mean about 10.6 m.
+2. **Check the diversion.** Look at the purpose and sketch on the diversion order. File a Form-I intimation for the residential part if the order shows another use.
+3. **Survey the water lines.** Get the stream's highest water level. Confirm the whole site is beyond 300 m of the Narmada's high-flood level.
+4. **Hold a pre-application meeting with T&CP Khargone.** Ask for written views on three things:
+   - the riverside garden as open space;
+   - paying the EWS/LIG shelter fee instead of reserving 6% of the saleable area.
+5. **Mortgage 16 of the 62 plots (25%)** with the Collector.
+6. **Register with RERA** before any advertising, marketing video or booking.
+
+## How this was measured
+
+- **Base drawing.** Geometry comes from the survey drawing (SU/10/01). The scale was calibrated to the surveyed areas at about 1:858.
+- **Roads.**
+  - Road centre-lines come from the road outline itself.
+  - Road widths were measured square off each plot's frontage every metre.
+  - Road lengths and the farthest-plot distance were measured along the centre-lines.
+- **Accuracy.** Expect ±0.5 m. The architect should redraw on the CAD survey before submission.
+
+## Sources
+
+- BVN 2012 consolidated to 6 Mar 2025, rules 2(21), 2(72), 2(5)(a), 3, 38, 43, 45, 46, 47, 49, 50, 53 and 56. This is T&CP's consolidation, read from a copy on GitHub: `kakarot07-git/bhopal-bhumi-vikas-sahayak`, `resources/MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf`. It was not checked against the official PDF, because mptownplan.gov.in can't be reached from this environment.
+- Rule 10 of the 2014 rules, as quoted by the MP High Court: https://indiankanoon.org/doc/156800479/
+- T&CP's opinion is an administrative step: https://indiankanoon.org/doc/13791469/
+- The 2014 rules applied on 3 Nov 2026: https://indiankanoon.org/doc/25256652/
+- MP Land Revenue Code s.59: https://indiankanoon.org/doc/27276173/ and https://indiankanoon.org/doc/40566298/
+- Earlier research: `reports/MP colony development rules guide.md`

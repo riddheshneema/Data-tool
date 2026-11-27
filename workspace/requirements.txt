@@ -1,0 +1,12 @@
+# Versions the layout and brochure tools were last run with (Python 3.13)
+shapely==2.2.0
+numpy==2.5.3
+matplotlib==3.11.2
+ezdxf==1.4.5
+networkx==3.7
+scikit-image==0.26.0
+scipy==1.18.1
+pillow==11.3.0
+pymupdf==2.1
+# Brochure PDF rendering also needs Node.js and Playwright with Chromium:
+#   npm install playwright && npx playwright install chromium
