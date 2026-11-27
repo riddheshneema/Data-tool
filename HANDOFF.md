@@ -100,3 +100,12 @@ This picks up the cloud session's work. Everything is on branch `ccr-feb95d7f-lj
 - `Jalkoti_Colony_Final_Layout.dxf`: CAD file in metres with layers for boundary, plots, roads, road centre lines, park, clubhouse, 9 m strip, plot numbers, areas and side lengths.
 - `Jalkoti_Colony_Final_Plot_Schedule.csv`: all 77 plots.
 - Built by `workspace/v7/final_set.py` after the v8 and landscape steps.
+
+### v9 (current final): no south-facing plots
+
+- Owner's reason: south-facing plots do not sell. v8 had 34 of 77 facing south.
+- `site_plans/final_v9/`: Stream Drive and the north-facing stream row are kept; inner streets (West, First, Avenue, Second, Third) run from the stream to the south line, so plots face east or west.
+- 69 plots, 259,095 sq ft, 53.7% of 11.07 ac. Faces: 11 north, 29 east, 29 west, 0 south. 49 rectangles, 20 with a straight front and irregular back or side.
+- Files: `Jalkoti_Colony_v9_Final_Drawing_Set.pdf` (5 sheets), PNG of each sheet, DXF, plot schedule CSV.
+- Rebuild: `workspace/v7/plan_v9.py` then `final_v9.py`.
+- `site_plans/final/` (v8) is superseded but kept.

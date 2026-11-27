@@ -34,7 +34,7 @@ for i, u in enumerate(US + [GU]):
     vend = max(W.uv(*c)[1] for c in seg.coords); ends[u] = (vs0, vend)
     CL['avenue' if u == GU else f's{i}'] = (W.line([(u, vs0), (u, vend if u != GU else VS)]), w)
 UC = US[-1] + PITCH; VL = P.get('vl', 150.0)
-if P.get('east', 1):
+if P.get('east', 0):
     seg = W.line([(UC, VL), (UC, -100)]).intersection(K.buffer(-1.0)); seg = min([g for g in getattr(seg, 'geoms', [seg]) if g.geom_type == 'LineString'], key=lambda g: g.distance(Point(W.xy(UC, VL))))
     vn = min(W.uv(*c)[1] for c in seg.coords) + 1.0
     CL['eastlink'] = (W.line([(US[-1], VL), (UC, VL)]), RW); CL['s_east'] = (W.line([(UC, VL + 4.5), (UC, vn)]), RW)
@@ -80,14 +80,25 @@ def cut(fr, v0, v1, front, Wt, region, face, tag):
                         g2 = big(ext.intersection(q))
                         if g.area + 3 < g2.area <= g.area * 1.5 and g2.area / g2.convex_hull.area > 0.93: g = g2; special = 'end plot: one side follows the boundary'
                 if g.area * SQFT < 3000 or g.boundary.intersection(RB_.buffer(0.2)).length < MINF: continue
-                plots.append(dict(poly=g, face=face, tag=tag, fr=fr.th, front=front, w=w_, d=dep, v=(v0, v1), corner=(ca and i_ == 0) or (cb and i_ == len(wds) - 1), special=special))
+                plots.append(dict(poly=g, u=(ua_, ub_), face=face, tag=tag, fr=fr.th, front=front, w=w_, d=dep, v=(v0, v1), corner=(ca and i_ == 0) or (cb and i_ == len(wds) - 1), special=special))
 free = BUILD.difference(roads).difference(park).difference(club)
-cut(W, A0, A1v, 'lo', 14.2, free.intersection(HPW), 'N', 'stream row'); cut(E, A0, A1v, 'lo', 14.2, free.intersection(HPE), 'N', 'stream row')
+cut(W, A0, A1v, 'lo', P.get('wa', 13.3), free.intersection(HPW), 'N', 'stream row'); cut(E, A0, A1v, 'lo', P.get('wa', 13.3), free.intersection(HPE), 'N', 'stream row')
 inner = free.difference(arow.buffer(0.01))
 WT = P.get('wt', 12.8)
-for u, h in [(UW, RW / 2)] + [(x, RW / 2) for x in US] + [(GU, AW / 2)] + ([(UC, RW / 2)] if P.get('east', 1) else []):
+for u, h in [(UW, RW / 2)] + [(x, RW / 2) for x in US] + [(GU, AW / 2)] + ([(UC, RW / 2)] if P.get('east', 0) else []):
     cut(W2, h - u, h - u + D, 'lo', WT, inner, 'E', f'street {u:.0f}')          # row west of the street, faces east
     cut(W2, -u - h - D, -u - h, 'hi', WT, inner, 'W', f'street {u:.0f}')       # row east of the street, faces west
+# edge rows take in the leftover land behind them: straight front on the street, back follows the boundary (capped)
+XD = P.get('xd', 13.7)
+for p in plots:
+    edge_e = p['tag'] == f'street {US[-1]:.0f}' and p['face'] == 'W'; edge_w = p['tag'] == f'street {UW:.0f}' and p['face'] == 'E'
+    if not (edge_e or edge_w): continue
+    v0, v1 = p['v']; ua_, ub_ = p['u']
+    ext = W2.rect(ua_, ub_, v0 - XD, v1) if p['front'] == 'hi' else W2.rect(ua_, ub_, v0, v1 + XD)
+    others = unary_union([q['poly'] for q in plots if q is not p])
+    g2 = big(big(ext.intersection(inner).difference(others.buffer(0.01))).simplify(0.05).intersection(BUILD.buffer(-0.03)).difference(roads))
+    if g2.area > p['poly'].area + 5 and g2.area / g2.convex_hull.area > 0.9 and g2.contains(p['poly'].buffer(-0.3)):
+        p['poly'] = g2; p['special'] = 'deeper plot: back follows the boundary'
 used = unary_union([p['poly'] for p in plots] + [roads, park, club]); green = K.difference(used)
 pickle.dump(dict(K=K, roads=roads, plots=plots, park=park, club=club, green=green, STRIP=STRIP, CL=CL, GU=GU, VS=VS, US=US, UW=UW, ends=ends, Wo=W.o, Wth=W.th, Eo=E.o, Eth=E.th), open(SP + 'v7/plan9.pkl', 'wb'))
 A = [p['poly'].area * SQFT for p in plots]
